@@ -1,0 +1,173 @@
+* Emacs configuration
+
+#+begin_src elisp
+  (org-babel-tangle-file "emacs.org")
+  (make-directory (expand-file-name "~/.emacs.d/file-backup") t)
+  (copy-file "early-init.el" (expand-file-name "~/.emacs.d/early-init.el") t)
+  (copy-file "init.el" (expand-file-name "~/.emacs.d/init.el") t)
+#+end_src
+
+#+RESULTS:
+
+** Requirements
+- Git (required by straight.el)
+
+* Early init file
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html
+#+begin_src elisp :tangle early-init.el
+  ;; init.el - Emacs configuration file
+  (setq package-enable-at-startup nil)
+#+end_src
+
+* Init file
+#+begin_src elisp :tangle init.el
+  ;; init.el - Emacs configuration file
+#+end_src
+
+** straight.el
+https://github.com/radian-software/straight.el
+
+#+begin_src elisp :tangle init.el
+  ;; Straight.el
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+end_src
+
+** straight-use-package
+
+https://github.com/jwiegley/use-package
+
+#+begin_src elisp :tangle init.el
+  ;; straight-use-package
+  (straight-use-package 'use-package)
+#+end_src
+
+** Encoding
+
+Use utf-8 as a default encoding.
+#+begin_src elisp :tangle init.el
+  ;; Encoding
+  (setq default-file-name-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8)
+  (setq default-process-coding-system '(utf-8 . utf-8))
+#+end_src
+
+** Misc
+
+#+begin_src elisp :tangle init.el
+  ;; Misc
+  (setq inhibit-startup-message t)   ;; Hide Startup Gnus
+  (setq visible-bell t)              ;; Visible bell (t: Enable, nil: Disable)
+  (menu-bar-mode 1)                  ;; Menu bar (1: Enable, -1: Disable)
+  (blink-cursor-mode 0)              ;; Blink Cursor (0: off, 1: blink)
+  (show-paren-mode 1)                ;; Emphasize pair parentheses
+  (setq set-mark-command-repeat-pop t)
+  (setq dired-listing-switches "-alh") ;; dired human readable
+  (global-unset-key (kbd "C-z"))     ;; disable minimize window
+
+  ;; Display cursor position
+  (line-number-mode t)               ;; Line number
+  (column-number-mode t)             ;; Column number
+  ;; Mode line
+  (display-time-mode 1)              ;; Display time
+  (setq display-time-day-and-date t) ;; Display date
+  (which-function-mode 1)            ;; Display function name
+  ;; File, Buffer
+  (setq auto-save-default nil)       ;; No auto-save
+  (global-auto-revert-mode 1)        ;; Reload modified buffer automatically
+  ;; Tab
+  (setq-default tab-width 4)           ;; Tab width: 4 space
+  (setq-default indent-tabs-mode nil)  ;; No tab
+  (electric-indent-mode 0)             ;; Prevent auto-indent when pasting
+  ;; font lock
+  (setq font-lock-global-modes t)
+  (setq text-mode-hook 'turn-off-auto-fill)  ;; Turn off auto-fill
+  ;; recentf
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 10000)
+  ;; windmove Move around splitted windows with Shift + arrow keys
+  (windmove-default-keybindings 'meta)
+#+end_src
+
+** ibuffer
+#+begin_src elisp :tangle init.el
+  ;; use ibuffer
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+#+end_src
+
+** Backup file
+#+begin_src elisp :tangle init.el
+  ;; Backup
+  (setq make-backup-files t)
+  ;; Backup directory
+  (setq backup-directory-alist
+        (cons (cons "\\.*$" (expand-file-name "~/.emacs.d/file-backup"))
+              backup-directory-alist))
+  (setq version-control t)                   ;; Multiple backups
+  (setq kept-new-versions 5)                 ;; Number of new versions
+  (setq kept-old-versions 5)                 ;; Number of the old versions
+  (setq delete-old-versions t)               ;; Delete old version
+#+end_src
+
+** Magit
+
+#+begin_src elisp :tangle init.el
+  ;; Magit
+  (use-package magit
+    :straight t
+    :config
+    (global-set-key (kbd "C-x g") 'magit-status)
+    (setq magit-auto-revert-mode nil))
+#+end_src
+
+** Consult
+#+begin_src elisp :tangle init.el
+  ;; consult
+  (use-package consult
+    :straight t
+    :config
+    (global-set-key (kbd "C-c f") 'consult-recent-file)
+    (global-set-key (kbd "M-g g") 'consult-goto-ine))
+#+end_src
+
+** Vertico
+#+begin_src elisp :tangle init.el
+  ;; vertico
+  (use-package vertico
+    :straight t
+    :config
+    (vertico-mode))
+#+end_src
+
+** Orderless
+#+begin_src elisp :tangle init.el
+  ;; Optionally use the `orderless' completion style.
+  (use-package orderless
+    :straight t
+    :custom
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+    ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+    (completion-styles '(orderless basic))
+    (completion-category-defaults nil)
+    (completion-category-overrides '((file (styles partial-completion)))))
+#+end_src
+
+** ob-async
+#+begin_src elisp :tangle init.el
+  (use-package ob-async
+    :straight t)
+#+end_src
