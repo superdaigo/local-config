@@ -15,4 +15,5 @@ Thumbs.db
 *~
 
 # Custom
-dot_emacs/*.el
+emacs/*.el
+tmux/.tmux.conf

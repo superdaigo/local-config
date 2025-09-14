@@ -166,8 +166,57 @@ Use utf-8 as a default encoding.
     (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
+** ddskk
+    
+https://github.com/skk-dev/ddskk
+https://github.com/skk-dev/ddskk
+
+M-x skk-get to download Jisyo files
+#+begin_src elisp :tangle init.el
+  ;; ddskk
+  (use-package ddskk
+    :straight t
+    :config
+    ;; Set ddskk as a default Japanese input method
+    (setq default-input-method "japanese-skk")
+    ;; Search (migemo)
+    ;; Dictionary files
+    (setq dir-skk-get-jisyo (expand-file-name "~/.emacs.d/skk-get-jisyo/"))
+    (setq skk-large-jisyo (concat dir-skk-get-jisyo "SKK-JISYO.L"))
+    (setq skk-extra-jisyo-file-list
+          (list (concat dir-skk-get-jisyo "SKK-JISYO.assoc")
+                (concat dir-skk-get-jisyo "SKK-JISYO.edict")
+                (concat dir-skk-get-jisyo "SKK-JISYO.geo")
+                (concat dir-skk-get-jisyo "SKK-JISYO.itaiji")
+                (concat dir-skk-get-jisyo "SKK-JISYO.jinmei")
+                (concat dir-skk-get-jisyo "SKK-JISYO.JIS2")
+                ((concat dir-skk-get-jisyo "SKK-JISYO.JIS3_4") . 'euc-jis-2004)
+                (concat dir-skk-get-jisyo "SKK-JISYO.law")
+                (concat dir-skk-get-jisyo "SKK-JISYO.lisp")
+                (concat dir-skk-get-jisyo "SKK-JISYO.mazegaki")
+                ))
+    ;; History file
+    )
+#+end_src
+
+#+RESULTS:
+
 ** ob-async
 #+begin_src elisp :tangle init.el
   (use-package ob-async
     :straight t)
+#+end_src
+
+** ollama-buddy.el
+https://github.com/captainflasmr/ollama-buddy
+
+The packate ~ollama-buddy.el~ requires Ollama installation.
+Ollama: https://ollama.com
+
+#+begin_src elisp :tangle init.el
+  (use-package ollama-buddy
+    :straight t
+    :bind
+    ("C-c o" . ollama-buddy-menu)
+    ("C-c O" . ollama-buddy-transient-menu-wrapper))
 #+end_src

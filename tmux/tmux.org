@@ -1,0 +1,21 @@
+* Tmux configuration
+
+#+begin_src elisp
+  (org-babel-tangle-file "tmux.org")
+  (copy-file ".tmux.conf" (expand-file-name "~/.tmux.conf") t)
+#+end_src
+
+#+RESULTS:
+
+Press ~C-z~ and execute ~source-file ~/.tmux.conf~
+
+** ~.tmux.conf~ file
+
+#+begin_src conf :tangle .tmux.conf
+  # ~/.tmux.conf
+  # Change default prefix C-b -> C-z
+  set -g prefix "C-z"
+
+  # Enable clipboard
+  set -g clipboard on
+#+end_src
