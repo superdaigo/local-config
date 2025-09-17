@@ -1,5 +1,7 @@
 * Tmux configuration
 
+Tested on tmux 3.4
+
 #+begin_src elisp
   (org-babel-tangle-file "tmux.org")
   (copy-file ".tmux.conf" (expand-file-name "~/.tmux.conf") t)
@@ -7,15 +9,34 @@
 
 #+RESULTS:
 
-Press ~C-z~ and execute ~source-file ~/.tmux.conf~
+Press ~C-z :~ and execute ~source-file ~/.tmux.conf~
 
-** ~.tmux.conf~ file
+** Head of ~.tmux.conf~ file
 
 #+begin_src conf :tangle .tmux.conf
   # ~/.tmux.conf
+#+end_src
+
+** Change default key
+
+#+begin_src conf :tangle .tmux.conf
   # Change default prefix C-b -> C-z
   set -g prefix "C-z"
+#+end_src
 
-  # Enable clipboard
-  set -g clipboard on
+** Split panes
+
+#+begin_src conf :tangle .tmux.conf
+  # splitting panes with | and -
+  bind | split-window -h
+  bind - split-window -v
+#+end_src
+
+** Copy to clipboard
+
+This requires ~xsel~ command.
+
+#+begin_src conf :tangle .tmux.conf
+  # Copy to clipboard usin xsel
+  set -s copy-command 'xsel --clipboard -i'
 #+end_src

@@ -14,6 +14,5 @@ Thumbs.db
 *.swo
 *~
 
-# Custom
+# Custom ignore files
 emacs/*.el
-tmux/.tmux.conf

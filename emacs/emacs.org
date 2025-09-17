@@ -69,14 +69,14 @@ Use utf-8 as a default encoding.
 
 #+begin_src elisp :tangle init.el
   ;; Misc
-  (setq inhibit-startup-message t)   ;; Hide Startup Gnus
-  (setq visible-bell t)              ;; Visible bell (t: Enable, nil: Disable)
-  (menu-bar-mode 1)                  ;; Menu bar (1: Enable, -1: Disable)
-  (blink-cursor-mode 0)              ;; Blink Cursor (0: off, 1: blink)
-  (show-paren-mode 1)                ;; Emphasize pair parentheses
+  (setq inhibit-startup-message t)      ;; Hide Startup Gnus
+  (setq visible-bell t)                 ;; Visible bell (t: Enable, nil: Disable)
+  (menu-bar-mode -1)                    ;; Menu bar (1: Enable, -1: Disable)
+  (blink-cursor-mode 0)                 ;; Blink Cursor (0: off, 1: blink)
+  (show-paren-mode 1)                   ;; Emphasize pair parentheses
   (setq set-mark-command-repeat-pop t)
-  (setq dired-listing-switches "-alh") ;; dired human readable
-  (global-unset-key (kbd "C-z"))     ;; disable minimize window
+  (setq dired-listing-switches "-alh")  ;; dired human readable
+  (global-unset-key (kbd "C-z"))        ;; disable minimize window
 
   ;; Display cursor position
   (line-number-mode t)               ;; Line number
@@ -169,9 +169,9 @@ Use utf-8 as a default encoding.
 ** ddskk
     
 https://github.com/skk-dev/ddskk
-https://github.com/skk-dev/ddskk
 
-M-x skk-get to download Jisyo files
+Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-jisyo~ directory.
+
 #+begin_src elisp :tangle init.el
   ;; ddskk
   (use-package ddskk
@@ -190,7 +190,7 @@ M-x skk-get to download Jisyo files
                 (concat dir-skk-get-jisyo "SKK-JISYO.itaiji")
                 (concat dir-skk-get-jisyo "SKK-JISYO.jinmei")
                 (concat dir-skk-get-jisyo "SKK-JISYO.JIS2")
-                ((concat dir-skk-get-jisyo "SKK-JISYO.JIS3_4") . 'euc-jis-2004)
+                (cons (concat dir-skk-get-jisyo "SKK-JISYO.JIS3_4") 'euc-jis-2004)
                 (concat dir-skk-get-jisyo "SKK-JISYO.law")
                 (concat dir-skk-get-jisyo "SKK-JISYO.lisp")
                 (concat dir-skk-get-jisyo "SKK-JISYO.mazegaki")
@@ -198,8 +198,6 @@ M-x skk-get to download Jisyo files
     ;; History file
     )
 #+end_src
-
-#+RESULTS:
 
 ** ob-async
 #+begin_src elisp :tangle init.el
