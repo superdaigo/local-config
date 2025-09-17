@@ -12,14 +12,22 @@
 ** Requirements
 - Git (required by straight.el)
 
-* Early init file
+* Early init file - ~$HOME/.emacs.d/early-init.el~
+
 https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html
 #+begin_src elisp :tangle early-init.el
-  ;; init.el - Emacs configuration file
+  ;; early-init.el - Emacs configuration file
+#+end_src
+
+** Disable packages
+
+Disable ~packages~ to make sure to use ~straight.el~ for package management.
+
+#+begin_src elisp :tangle early-init.el
   (setq package-enable-at-startup nil)
 #+end_src
 
-* Init file
+* Init file - ~$HOME/.emacs.d/init.el~
 #+begin_src elisp :tangle init.el
   ;; init.el - Emacs configuration file
 #+end_src
@@ -69,46 +77,57 @@ Use utf-8 as a default encoding.
 
 #+begin_src elisp :tangle init.el
   ;; Misc
-  (setq inhibit-startup-message t)      ;; Hide Startup Gnus
-  (setq visible-bell t)                 ;; Visible bell (t: Enable, nil: Disable)
-  (menu-bar-mode -1)                    ;; Menu bar (1: Enable, -1: Disable)
-  (blink-cursor-mode 0)                 ;; Blink Cursor (0: off, 1: blink)
-  (show-paren-mode 1)                   ;; Emphasize pair parentheses
-  (setq set-mark-command-repeat-pop t)
-  (setq dired-listing-switches "-alh")  ;; dired human readable
-  (global-unset-key (kbd "C-z"))        ;; disable minimize window
+  (setq inhibit-startup-message t)       ;; Hide Startup Gnus
+  (setq visible-bell t)                  ;; Visible bell (t: Enable, nil: Disable)
+  (menu-bar-mode -1)                     ;; Menu bar (1: Enable, -1: Disable)
+  (blink-cursor-mode 0)                  ;; Blink Cursor (0: off, 1: blink)
+  (show-paren-mode 1)                    ;; Emphasize pair parentheses
+  (setq dired-listing-switches "-alhv")  ;; dired human readable
+  (global-unset-key (kbd "C-z"))         ;; disable minimize window on macOS GUI mode. The key also assigned to the default tmux key in terminal.
 
   ;; Display cursor position
-  (line-number-mode t)               ;; Line number
-  (column-number-mode t)             ;; Column number
+  (line-number-mode t)                   ;; Line number
+  (column-number-mode t)                 ;; Column number
   ;; Mode line
-  (display-time-mode 1)              ;; Display time
-  (setq display-time-day-and-date t) ;; Display date
-  (which-function-mode 1)            ;; Display function name
+  (display-time-mode 1)                  ;; Display time
+  (setq display-time-day-and-date t)     ;; Display date
+  (which-function-mode 1)                ;; Display function name
   ;; File, Buffer
-  (setq auto-save-default nil)       ;; No auto-save
-  (global-auto-revert-mode 1)        ;; Reload modified buffer automatically
-  ;; Tab
-  (setq-default tab-width 4)           ;; Tab width: 4 space
-  (setq-default indent-tabs-mode nil)  ;; No tab
-  (electric-indent-mode 0)             ;; Prevent auto-indent when pasting
-  ;; font lock
+  (setq auto-save-default nil)           ;; No auto-save
+  (global-auto-revert-mode 1)            ;; Reload modified buffer automatically
+  ;; Tab, Indent
+  (setq-default tab-width 4)             ;; Tab width: 4 space
+  (setq-default indent-tabs-mode nil)    ;; No tab
+  (electric-indent-mode 0)               ;; Prevent auto-indent when pasting
+  ;; Font lock
   (setq font-lock-global-modes t)
   (setq text-mode-hook 'turn-off-auto-fill)  ;; Turn off auto-fill
+  ;; windmove Move around splitted windows
+  (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
+  (setq windmove-wrap-around t)              ;; Include mini buffer
+#+end_src
+
+** recentf - keep track of recently opened files
+
+List recent files to ease to back to recent files.
+
+~C-c f~ to open recent files.
+
+#+begin_src elisp :tangle init.el
   ;; recentf
   (recentf-mode 1)
   (setq recentf-max-saved-items 10000)
-  ;; windmove Move around splitted windows with Shift + arrow keys
-  (windmove-default-keybindings 'meta)
 #+end_src
 
 ** ibuffer
+
 #+begin_src elisp :tangle init.el
   ;; use ibuffer
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+end_src
 
 ** Backup file
+
 #+begin_src elisp :tangle init.el
   ;; Backup
   (setq make-backup-files t)
