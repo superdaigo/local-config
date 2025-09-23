@@ -102,16 +102,15 @@ Use utf-8 as a default encoding.
   ;; Font lock
   (setq font-lock-global-modes t)
   (setq text-mode-hook 'turn-off-auto-fill)  ;; Turn off auto-fill
-  ;; windmove Move around splitted windows
-  (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
-  (setq windmove-wrap-around t)              ;; Include mini buffer
+  ;; ;; windmove Move around splitted windows -> conflicted org-mode keybinding
+  ;; (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
+  ;; (setq windmove-wrap-around t)              ;; Include mini buffer
 #+end_src
 
-** recentf - keep track of recently opened files
+** Recentf - keep track of recently opened files
 
-List recent files to ease to back to recent files.
-
-~C-c f~ to open recent files.
+Enable recentf-mode and keep large number of histories (10000).
+The mode is called through [[*Consult][Consult]].
 
 #+begin_src elisp :tangle init.el
   ;; recentf
@@ -119,7 +118,13 @@ List recent files to ease to back to recent files.
   (setq recentf-max-saved-items 10000)
 #+end_src
 
-** ibuffer
+** Ibuffer
+
+Prefer to use ibuffer instead of Emacs default one.
+
+| Key bind | Description        |
+|----------+--------------------|
+| C-x C-b  | Show opened buffer |
 
 #+begin_src elisp :tangle init.el
   ;; use ibuffer
@@ -127,6 +132,8 @@ List recent files to ease to back to recent files.
 #+end_src
 
 ** Backup file
+
+Make backup file under the ~%HOME/.emacs.d/file-backup~ directory.
 
 #+begin_src elisp :tangle init.el
   ;; Backup
@@ -143,6 +150,10 @@ List recent files to ease to back to recent files.
 
 ** Magit
 
+| Key bind | Description        |
+|----------+--------------------|
+| C-x g    | Enter magit status |
+
 #+begin_src elisp :tangle init.el
   ;; Magit
   (use-package magit
@@ -153,16 +164,34 @@ List recent files to ease to back to recent files.
 #+end_src
 
 ** Consult
+
+| Key bind | Description                             |
+|----------+-----------------------------------------|
+| C-c f    | Show recent files (recentf)             |
+| C-c o    | Show outline (org-mode, rst-mode, etc.) |
+| M-g g    | Goto line                               |
+
+Consult is used with other packages.
+Dependencies:
+- Vertico
+- Orderless
+- Recentf
+- Any of structured text mode (Org, Rst, Markdown, etc.)
+
 #+begin_src elisp :tangle init.el
   ;; consult
   (use-package consult
     :straight t
     :config
     (global-set-key (kbd "C-c f") 'consult-recent-file)
-    (global-set-key (kbd "M-g g") 'consult-goto-ine))
+    (global-set-key (kbd "C-c o") 'consult-outline)
+    (global-set-key (kbd "M-g g") 'consult-goto-line))
 #+end_src
 
 ** Vertico
+
+Used by Consult.
+
 #+begin_src elisp :tangle init.el
   ;; vertico
   (use-package vertico
@@ -172,6 +201,7 @@ List recent files to ease to back to recent files.
 #+end_src
 
 ** Orderless
+Used by Consult and Vertico.
 #+begin_src elisp :tangle init.el
   ;; Optionally use the `orderless' completion style.
   (use-package orderless
@@ -186,9 +216,15 @@ List recent files to ease to back to recent files.
 #+end_src
 
 ** ddskk
-    
+
+Japanese input method for Emacs.
 https://github.com/skk-dev/ddskk
 
+| Key bind | Description         |
+|----------+---------------------|
+| C-\      | Toggle input method |
+
+Initial setup:
 Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-jisyo~ directory.
 
 #+begin_src elisp :tangle init.el
@@ -218,6 +254,62 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
     )
 #+end_src
 
+** markdown-mode
+Markdown mode
+#+begin_src elisp :tangle init.el
+  ;; markdown-mode
+  (use-package markdown-mode
+    :straight t)
+#+end_src
+
+** Programming Language
+*** js2-mode
+#+begin_src elisp :tangle init.el
+  ;; js2-mode
+  (use-package js2-mode
+    :straight t
+    :config
+    (setq js-indent-level 2)
+    (setq js-expr-indent-offset 2))
+#+end_src
+
+*** json-mode
+#+begin_src elisp :tangle init.el
+  ;; json-mode
+  (use-package json-mode
+    :straight t
+    :config
+    (setq js-indent-level 2)
+    (setq js-expr-indent-offset 2))
+#+end_src
+
+*** go-mode
+Go language mode.
+Enable TAB indent.
+#+begin_src elisp :tangle init.el
+  ;; go-mode
+  (use-package go-mode
+    :straight t
+    :config
+    (setq indent-tabs-mode t)
+    (setq tab-width 4))
+#+end_src
+
+*** powershell
+PoserShell mode
+#+begin_src elisp :tangle init.el
+  ;; powershell mode
+  (use-package powershell
+    :straight t)
+#+end_src
+*** yaml-mode
+YAML mode
+#+begin_src elisp :tangle init.el
+  ;; yaml mode
+  (use-package yaml-mode
+    :straight t)
+#+end_src
+
 ** ob-async
 #+begin_src elisp :tangle init.el
   (use-package ob-async
@@ -228,12 +320,14 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
 https://github.com/captainflasmr/ollama-buddy
 
 The packate ~ollama-buddy.el~ requires Ollama installation.
+
+Requirement:
 Ollama: https://ollama.com
 
 #+begin_src elisp :tangle init.el
   (use-package ollama-buddy
     :straight t
     :bind
-    ("C-c o" . ollama-buddy-menu)
+    ;; ("C-c o" . ollama-buddy-menu) ;; conflicted with buffer
     ("C-c O" . ollama-buddy-transient-menu-wrapper))
 #+end_src
