@@ -73,6 +73,19 @@ Use utf-8 as a default encoding.
   (setq default-process-coding-system '(utf-8 . utf-8))
 #+end_src
 
+** xclip
+
+Synchronize Clipboard with Copy & Paste
+https://elpa.gnu.org/packages/xclip.html
+
+#+begin_src elisp :tangle init.el
+  ;; Synchronize clipboard
+  (use-package xclip
+    :straight t
+    :config
+    (setq xclip-mode 1))
+#+end_src
+
 ** Misc
 
 #+begin_src elisp :tangle init.el
