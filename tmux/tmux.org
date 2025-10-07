@@ -49,3 +49,14 @@ Chante ot true color
   # See https://github.com/tmux/tmux/wiki/FAQ#how-do-i-use-rgb-colour.
   set -as terminal-overrides ",xterm-256color:RGB"
 #+end_src
+
+** Mouse mode
+
+Enables selecting buffer/window using mouse click
+
+#+begin_src conf :tangle .tmux.conf
+  # Turn on simple mouse operation
+  set -g mouse on
+#+end_src
+
+
