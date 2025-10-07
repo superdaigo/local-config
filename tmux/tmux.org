@@ -40,3 +40,12 @@ This requires ~xsel~ command.
   # Copy to clipboard usin xsel
   set -s copy-command 'xsel --clipboard -i'
 #+end_src
+
+** True Color
+
+Chante ot true color
+
+#+begin_src conf :tangle .tmux.conf
+  # See https://github.com/tmux/tmux/wiki/FAQ#how-do-i-use-rgb-colour.
+  set -as terminal-overrides ",xterm-256color:RGB"
+#+end_src
