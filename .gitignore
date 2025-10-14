@@ -15,5 +15,6 @@ Thumbs.db
 *~
 
 # Custom ignore files
-emacs/*.el
-tmux/.tmux.conf
+emacs/
+tmux/
+ghostty/
