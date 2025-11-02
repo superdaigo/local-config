@@ -1,0 +1,12 @@
+* Settings of my local environment
+
+I have multiple enironments but I cannot leave from Emacs environment.
+Fortunately, Emacs works on multiple environments and Linux like enviornment is available on multiple OSs even on Windows (WSL).
+
+** Emacs
+
+** Tmux
+
+** Zsh
+
+Zsh is available only on Linux/WSL and macOS.

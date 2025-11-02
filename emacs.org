@@ -1,5 +1,7 @@
-
+#+TITLE: Emacs Configuration
 * Emacs configuration
+
+Here is an org-babel-tangle to deploy init.el and early-ini.el under ~$HOME/.emacs.d~ directory.
 
 #+begin_src elisp
   ;; Generate file
@@ -249,7 +251,7 @@ Used by Consult and Vertico.
     (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
-** ddskk
+** Japanese Input Method - ddskk
 
 Japanese input method for Emacs.
 https://github.com/skk-dev/ddskk
@@ -288,7 +290,12 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
     )
 #+end_src
 
-** markdown-mode
+** Org-mode
+Org-mode configuration
+
+
+
+** Markdown-mode
 Markdown mode
 #+begin_src elisp :tangle emacs/init.el
   ;; markdown-mode
