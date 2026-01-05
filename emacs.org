@@ -3,7 +3,7 @@
 
 Here is an org-babel-tangle to deploy init.el and early-ini.el under ~$HOME/.emacs.d~ directory.
 
-#+begin_src elisp
+#+begin_src elisp :outputs none
   ;; Generate file
   (org-babel-tangle-file "emacs.org")
   ;; Make file backup directory for emacs
@@ -17,7 +17,7 @@ Here is an org-babel-tangle to deploy init.el and early-ini.el under ~$HOME/.ema
       (copy-file dest-early-init-file (concat backup-prefix "early-init.el"))
     nil)
   (if (file-exists-p dest-init-file)
-      (copy-file dest-early-init-file (concat backup-prefix "init.el"))
+      (copy-file dest-init-file (concat backup-prefix "init.el"))
     nil)
   ;; Save new file
   (copy-file "emacs/early-init.el" dest-early-init-file t)
@@ -25,6 +25,7 @@ Here is an org-babel-tangle to deploy init.el and early-ini.el under ~$HOME/.ema
 #+end_src
 
 #+RESULTS:
+
 
 ** Requirements
 - Git (required by straight.el)
@@ -274,6 +275,10 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
     ;; Dictionary files
     (setq dir-skk-get-jisyo (expand-file-name "~/.emacs.d/skk-get-jisyo/"))
     (setq skk-large-jisyo (concat dir-skk-get-jisyo "SKK-JISYO.L"))
+    ;; Download SKK jisyo files if not exists
+    (if (file-exists-p skk-large-jisyo)
+        (message "SKK-JISYO.L exists")
+      (skk-get))
     (setq skk-extra-jisyo-file-list
           (list (concat dir-skk-get-jisyo "SKK-JISYO.assoc")
                 (concat dir-skk-get-jisyo "SKK-JISYO.edict")
@@ -292,8 +297,6 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
 
 ** Org-mode
 Org-mode configuration
-
-
 
 ** Markdown-mode
 Markdown mode
@@ -343,6 +346,7 @@ PoserShell mode
   (use-package powershell
     :straight t)
 #+end_src
+
 *** yaml-mode
 YAML mode
 #+begin_src elisp :tangle emacs/init.el
