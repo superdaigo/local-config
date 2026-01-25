@@ -4,26 +4,28 @@
 
 #+begin_src elisp :output none
   ;; local variables
-  (setq-local dest-dir (expand-file-name "~/.config/zellij"))
-  (setq-local dest-file-name "config.kdl")
+  (setq-local dst-dir (expand-file-name "~/.config/zellij"))
   (setq-local tmp-dir "zellij")
-  (setq-local dest-file-path (file-name-concat dest-dir dest-file-name))
-  (setq-local new-file-path (file-name-concat tmp-dir dest-file-name))
-  (setq-local backup-file-name (concat (format-time-string "%Y-%m-%d_%H%M%S_") dest-file-name))
-  (setq-local backup-file-path (file-name-concat tmp-dir backup-file-name))
+  (setq-local backup-prefix (format-time-string "%Y-%m-%d_%H%M%S_"))
   ;; Make directories
   (make-directory tmp-dir t)
-  (make-directory dest-dir t)
-  ;; Generate file
+  (make-directory dst-dir t)
+  ;; Generate files under tmp dir (./zellij)
   (org-babel-tangle-file "zellij.org")
-  ;; Take backup
-  (if (file-exists-p dest-file-path)
-      (copy-file dest-file-path backup-file-path)
-    nil)
   ;; Save new file
-  (copy-file new-file-path dest-file-path t)
-  (copy-file (file-name-concat tmp-dir "scroll-editor-init.el") (file-name-concat dest-dir "scroll-editor-init.el")) t)
+  (dolist (i (list "config.kdl"))
+    (let ((src-file-path (file-name-concat tmp-dir i))
+          (dst-file-path (file-name-concat dst-dir i))
+          (bak-file-path (file-name-concat tmp-dir (concat backup-prefix i))))
+      ;; Take backup
+      (if (file-exists-p dst-file-path)
+          (copy-file dst-file-path bak-file-path t)
+        nil)
+      ;; deploy
+      (copy-file src-file-path dst-file-path t)))
 #+end_src
+
+#+RESULTS:
 
 
 ** Configuration
@@ -547,7 +549,8 @@ Create a scroll back editor specific init file ~scroll-editor-init.el~
   // Path to the default editor to use to edit pane scrollbuffer
   // Default: $EDITOR or $VISUAL
   // scrollback_editor "/usr/bin/vim"
-  scrollback_editor "/usr/bin/emacs -nw -Q -l $HOME/.config/zellij/scroll-editor-init.el"
+  // scrollback_editor "/usr/bin/emacs -nw -Q -l $HOME/.config/zellij/scroll-editor-init.el"
+  scrollback_editor "scroll-editor.sh"
    
   // A fixed name to always give the Zellij session.
   // Consider also setting `attach_to_session true,`
@@ -696,13 +699,44 @@ Create a scroll back editor specific init file ~scroll-editor-init.el~
   // post_command_discovery_hook "echo $RESURRECT_COMMAND | sed <your_regex_here>"
 #+end_src
 
-** Emacs init file for scroll editor ~scroll-editor-init.el~
+** Emacs as a Scroll Editor
 
-#+begin_src conf :tangle zellij/scroll-editor-init.el
+Zellij utilize external text editor as a scroll editor, that is different from Tmux's approach.
+When opening the scroll buffer, the editor point the first line of the scroll buffer, that I don't expected.
+Personally, I want to see the LAST line of the scroll buffer, since it is shown on the screen in most cases.
+
+Here is my current solution for opening a bottom of the scroll buffer.
+
+Note:
+
+Zellij configuration ~scrollback_editor~ cannot understand environment varialbe.
+So, the executable must be written FULL path or specify the file name under the PATH.
+Current approach is creating the ~scroll-editor.sh~ file under the ~$HOME/.local/bin~ directory assuming the directory is included in the PATH.
+
+*** Emacs launch file - ~scroll-editor.sh~
+
+#+begin_src bash :tangle ~/.local/bin/scroll-editor.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
+  # Launch Emacs for Zellij Scroll Editor
+
+  # Find emacs path
+  EMACS_PATHS=(
+    "/usr/bin/emacs"
+    "/Applications/Emacs.app/Contents/MacOS/Emacs"
+  )
+  # Find and run emacs
+  for EMACS in ${EMACS_PATHS[@]}; do
+    if [ -f "$EMACS" ]; then
+      "$EMACS" -nw -Q -l "$HOME/.local/bin/scroll-editor-init.el" $@
+    fi
+  done
+#+end_src
+
+*** Emacs init file for scroll editor - ~scroll-editor-init.el~
+
+#+begin_src conf :tangle ~/.local/bin/scroll-editor-init.el :mkdirp yes
   ;; Emacs init file for Zellij scroll editor
   ;; no menu
   (menu-bar-mode -1)
   ;; scroll down to the end of the buffer
   (add-hook 'find-file-hook 'end-of-buffer)
 #+end_src
-
