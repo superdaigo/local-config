@@ -1,0 +1,182 @@
+* Zsh configuration
+
+Copied from the current file.
+TODO: Clean up
+
+** ~.zshrc~
+
+#+begin_src conf :tangle zsh/.zshrc
+  # .zshrc
+  fpath=(~/.zsh.d/completion $fpath)
+  ## auto compliment
+  autoload -U compinit
+  compinit
+  setopt nonomatch
+  # online help
+  unalias run-help
+  autoload run-help
+  HELPDIR=/usr/local/share/zsh/help
+    
+  # ignore case compliment
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+  # list-colors like ls command
+  zstyle ':completion:*' list-colors 'di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+  # sudo compliment
+  zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
+                     /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
+  # ps compliment
+  zstyle ':completion:*:processes' command 'ps x -o pid,s,args'
+  ## history
+  zstyle ':completion:*:default' menu select=1
+  HISTSIZE=1000000
+  SAVEHIST=1000000
+  # Symbolic link of HISTFILE is replaced actual file. Because zsh
+  # maintains history file like write out copy and rename it over the
+  # old one. So we need to specify actual file here.
+  # HISTFILE=~/.zsh_history
+  HISTFILE=~/.zsh.d/.zsh_history
+  setopt hist_ignore_all_dups
+  setopt hist_ignore_space
+  setopt hist_reduce_blanks
+  setopt hist_save_no_dups
+  setopt share_history
+  setopt extended_glob
+  setopt noflowcontrol
+  ## 
+  # export EDITOR='emacs -nw'
+  export EDITOR='emacsclient -nw'
+  # export LANG=ja_JP.UTF-8
+  export LANG=en_US.UTF-8
+  ## prompt
+  autoload -U promptinit && promptinit
+  # # [user-name@machine-name] ~/path
+  # # $ 
+  # export PS1="%{${fg[red]}%}[%n@%m]%{${reset_color}%} %~
+  # $ "
+  # git-prompt.sh
+  if type brew >/dev/null && [ -d $(brew --prefix) ]; then
+    source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+  fi
+  setopt PROMPT_SUBST
+  export GIT_PS1_SHOWCOLORHINTS=1     # works when use with precmd()
+  export GIT_PS1_SHOWDIRTYSTATE=1
+  export GIT_PS1_SHOWUPSTREAM="auto"
+  # # [~]                                       (master=)
+  # # $ 
+  # function get_pwd() {
+  #     echo "${PWD/$HOME/~}"
+  # }
+  # function put_spacing() {
+  #     # [] + spaces for virtual env
+  #     local prompt_brace=(2 + 10)
+  #     # git prompt width
+  #     local git="$(__git_ps1 "(%s)")"
+  #     if [ ${#git} == 0 ]; then
+  # 	git=""
+  #     fi
+  #     # calculate
+  #     local termwidth
+  #     (( termwidth = ${COLUMNS} - (${prompt_brace} + ${#$(get_pwd)} + ${#git})))
+  #     # spacing
+  #     local spacing=""
+  #     for i in {1..$termwidth}; do
+  # 	spacing="${spacing} "
+  #     done
+  #     echo $spacing
+  # }
+  # PROMPT='[$(get_pwd)]$(put_spacing)$(__git_ps1 "(%s)")
+  # $ '
+  # [~/path](master=)
+  # $ 
+  PROMPT='[%~]$(__git_ps1 "(%s)")
+  %% '
+
+  ## aws command
+  # if which aws_zsh_completer.sh > /dev/null; then source `which aws_zsh_completer.sh`; fi
+  # home bin
+  PATH="${HOME}/bin:${PATH}"
+
+  ## rbenv
+  if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+  ## pyenv
+  if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+  ## pyenv-virtualenv
+  if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+  ## goenv
+  if which goenv > /dev/null; then eval "$(goenv init -)"; fi
+  ## direnv
+  if which direnv > /dev/null; then eval "$(direnv hook zsh)"; fi
+
+  export PATH
+
+  ## aliaas
+  alias ls='ls -Gp'
+  alias ll='ls -l'
+  alias la='ls -la'
+  alias e='emacsclient -nw'
+  alias ec='emacsclient -nc'
+  alias ta='if ! $(tmux attach-session) ; then tmux; fi'
+  alias tl='tmux list-session'
+  alias d='docker'
+  alias di='docker images'
+  alias ds='docker ps'
+  alias magit='emacsclient -nw -e \(magit-status\)'
+  if which brew > /dev/null; then
+    if [ -f "$(brew --prefix pyenv)/bin/pyenv" ]; then
+      alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+    fi
+  fi
+  # ssh-agent
+  if [ ! -f "$(ssh-add -l | grep "ssh" | cut -d' ' -f3 | head -n1)" ] ; then
+    ssh-add --apple-load-keychain
+  fi
+
+  # Bitwarden Custom CLI
+  # export BW_LOGIN=""
+  # export BW_KEYCHAIN_KEY="bitwarden.work"
+
+  # The next line updates PATH for the Google Cloud SDK.
+  if [ -f "$HOME/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/google-cloud-sdk/path.zsh.inc"; fi
+
+  # The next line enables shell command completion for gcloud.
+  if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
+
+  . "$HOME/.local/bin/env"
+#+end_src
+
+** ~.zshenv~
+
+#+begin_src conf :tangle zsh/.zshenv
+  LC_CTYPE=ja_JP.UTF-8
+  # disable special creation/extraction of ._* files by tar, etc. on Mac OS X
+  COPYFILE_DISABLE=1; export COPYFILE_DISABLE
+
+  ## git-prompt.sh
+  # % cp /usr/local/etc/bash_completion.d/git-prompt.sh "$HOME/.zsh.d/"
+  source ~/.zsh.d/git-prompt.sh
+  if [ "$EMACS" ];then
+    export TERM=eterm-color
+  fi
+
+  # ## Rust
+  # . "$HOME/.cargo/env"
+#+end_src
+
+** ~~/.local/bin/env~ to add path
+
+TODO: check if this is required for fresh installation.
+It looks like the file is installed by uv.
+
+#+begin_src conf zsh/.local/bin/env
+  #!/bin/sh
+  # add binaries to PATH if they aren't added yet
+  # affix colons on either side of $PATH to simplify matching
+  case ":${PATH}:" in
+      ,*:"$HOME/.local/bin":*)
+          ;;
+      ,*)
+          # Prepending path in case a system-installed binary needs to be overridden
+          export PATH="$HOME/.local/bin:$PATH"
+          ;;
+  esac
+#+end_src
