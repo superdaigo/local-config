@@ -271,7 +271,6 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
     :config
     ;; Set ddskk as a default Japanese input method
     (setq default-input-method "japanese-skk")
-    ;; Search (migemo)
     ;; Dictionary files
     (setq dir-skk-get-jisyo (expand-file-name "~/.emacs.d/skk-get-jisyo/"))
     (setq skk-large-jisyo (concat dir-skk-get-jisyo "SKK-JISYO.L"))
@@ -294,9 +293,39 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
     ;; History file
     )
 #+end_src
+** Migemo
+
+Enable migemo search only if cmigemo is installed.
+
+Requirements:
+- cmigemo (https://github.com/koron/cmigemo)
+
+#+begin_src elisp :tangle emacs/init.el
+  (defun get-cmigemo-path ()
+    "Returns full path of `cmigemo` executable if it exists, otherwise nil."
+    (let* ((cmigemo-path (executable-find "cmigemo"))
+           (cmigemo-realpath (file-truename cmigemo-path)))
+      ;; Return nil if not found
+      (when cmigemo-path cmigemo-realpath)))
+  (defun get-cmigemo-dict-path (cmigemo-path)
+    "Returns full path of `cmigemo` dict directory if it exisits, otherwise nil."
+    (if (string-match "^\\(.*\\)\\/bin\\/cmigemo$" cmigemo-path)
+        (concat (match-string 1 cmigemo-path) "/share/migemo/utf-8/migemo-dict")
+      ;; return nil if the pattern "/bin/cmigemo" doesn't match
+      nil))
+  (use-package migemo
+    :straight t
+    :if (when (get-cmigemo-path) t)  ;; install migemo only if the cmigemo installed
+    :config
+    (setq migemo-command (get-cmigemo-path))
+    (setq migemo-directory (get-cmigemo-dict-path migemo-command))
+    (migemo-init))
+#+end_src
+
 
 ** Org-mode
 Org-mode configuration
+
 
 ** Markdown-mode
 Markdown mode

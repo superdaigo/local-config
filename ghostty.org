@@ -49,10 +49,10 @@ https://github.com/yuru7/HackGen
 #+end_src
 
 ** Keybindings
-| Action              | Key (macOS)       | Linux              |
-|---------------------+-------------------+--------------------|
-| Reload config       | ~Cmd + Shift + ,~ | ~Ctrl + Shift + ,~ |
-| Launch quick window | ~Cmd + Escape~    | ~Ctrl + `~         |
+| Action              | Linux              | macOS             |
+|---------------------+--------------------+-------------------|
+| Reload config       | ~Ctrl + Shift + ,~ | ~Cmd + Shift + ,~ |
+| Launch quick window | ~Ctrl + `~         | ~Cmd + Escape~    |
 
 Keybinds are different per OS
 
