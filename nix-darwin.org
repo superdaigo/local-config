@@ -1,0 +1,96 @@
+[Work in progress]
+
+#+begin_src nix
+  {
+    description = "Simple nix-darwin system flake";
+
+    # Init
+    # sudo nix run nix-darwin/nix-darwin-25.05#darwin-rebuild --extra-experimental-features 'flakes nix-command' -- switch --flake /etc/nix-darwin#simple
+    #
+    # Rebuild
+    # sudo darwin-rebuild build --flake /etc/nix-darwin#simple
+    #
+    # Switch to the new build
+    # sudo darwin-rebuild switch --flake /etc/nix-darwin#simple
+    #
+    # List generations
+    # sudo darwin-rebuild --list-generations
+    #
+    # Switch to a specific generation
+    # sudo darwin-rebuild --switch-generation N
+
+    inputs = {
+      nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.05-darwin";
+      nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+      nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    outputs = inputs@{ self, nix-darwin, nixpkgs }:
+    let
+      configuration = { pkgs, ... }: {
+        # List packages installed in system profile. To search by name, run:
+        # $ nix-env -qaP | grep wget
+        environment.systemPackages = with pkgs; [
+          # emacs30  # Use "Emacs for Mac OS X" because of "libgccjit.so error" on Emacs 29 and later.
+          awscli2
+          cmigemo
+          curl
+          ffmpeg-full
+          git
+          gh
+          gnused
+          go
+          google-cloud-sdk
+          graphviz
+          httpie
+          imagemagick
+          jq
+          keka
+          nmap
+          ripgrep
+          # podman
+          # podman-tui
+          # python3Full
+          # reattach-to-user-namespace
+          sqlite
+          # tmux
+          uv
+          # vagrant
+          wireshark
+          yt-dlp
+          zellij
+          zsh
+        ];
+
+        # Necessary for using flakes on this system.
+        nix.settings.experimental-features = "nix-command flakes";
+
+        # Enable alternative shell support in nix-darwin.
+        # programs.fish.enable = true;
+
+        # Set Git commit hash for darwin-version.
+        system.configurationRevision = self.rev or self.dirtyRev or null;
+
+        # Used for backwards compatibility, please read the changelog before changing.
+        # $ darwin-rebuild changelog
+        system.stateVersion = 6;
+
+        # The platform the configuration will be used on.
+        nixpkgs.hostPlatform = "aarch64-darwin";
+
+        # Allow specific Unfree package
+        nixpkgs.config.allowUnfree = true;
+        # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+        #   "keka"
+        # ];
+      };
+    in
+    {
+      # Build darwin flake using:
+      # $ sudo darwin-rebuild build --flake /etc/nix-darwin#simple
+      darwinConfigurations."simple" = nix-darwin.lib.darwinSystem {
+        modules = [ configuration ];
+      };
+    };
+  }
+#+end_src

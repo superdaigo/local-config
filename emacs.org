@@ -3,28 +3,29 @@
 
 Here is an org-babel-tangle to deploy init.el and early-ini.el under ~$HOME/.emacs.d~ directory.
 
-#+begin_src elisp :outputs none
-  ;; Generate file
-  (org-babel-tangle-file "emacs.org")
-  ;; Make file backup directory for emacs
-  (make-directory (expand-file-name "~/.emacs.d/file-backup") t)
+#+begin_src elisp :results none
   ;; local variables
-  (setq-local dest-early-init-file (expand-file-name "~/.emacs.d/early-init.el"))
-  (setq-local dest-init-file (expand-file-name "~/.emacs.d/init.el"))
-  (setq-local backup-prefix (format-time-string "emacs/%Y-%m-%d_%H%M%S_"))
-  ;; Take backup
-  (if (file-exists-p dest-early-init-file)
-      (copy-file dest-early-init-file (concat backup-prefix "early-init.el"))
-    nil)
-  (if (file-exists-p dest-init-file)
-      (copy-file dest-init-file (concat backup-prefix "init.el"))
-    nil)
-  ;; Save new file
-  (copy-file "emacs/early-init.el" dest-early-init-file t)
-  (copy-file "emacs/init.el" dest-init-file t)
+  (setq-local config-files (list "init.el" "early-init.el"))
+  (setq-local dst-dir (expand-file-name "~/.emacs.d"))
+  (setq-local tmp-dir (file-name-base buffer-file-name))
+  (setq-local backup-prefix (format-time-string "%Y-%m-%d_%H%M%S_"))
+  ;; Create directories
+  (dolist (dir-name (list dst-dir tmp-dir (file-name-concat dst-dir "file-backup")))
+    (make-directory dir-name t))
+  ;; Generate file
+  (org-babel-tangle-file buffer-file-name)
+  ;; Copy current files and deploy
+  (dolist (config-file config-files)
+    (let ((tmp-file (file-name-concat tmp-dir config-file))
+          (bak-file (file-name-concat tmp-dir (concat backup-prefix config-file)))
+          (dst-file (file-name-concat dst-dir config-file)))
+      ;; Take backup
+      (if (file-exists-p dst-file)
+          (copy-file dst-file bak-file)
+        nil)
+      ;; Save new file
+      (copy-file tmp-file dst-file t)))
 #+end_src
-
-#+RESULTS:
 
 
 ** Requirements
@@ -78,6 +79,9 @@ https://github.com/radian-software/straight.el
     (load bootstrap-file nil 'nomessage))
 #+end_src
 
+#+RESULTS:
+: t
+
 ** straight-use-package
 
 https://github.com/jwiegley/use-package
@@ -102,12 +106,37 @@ Use utf-8 as a default encoding.
 Synchronize Clipboard with Copy & Paste
 https://elpa.gnu.org/packages/xclip.html
 
+It works in multiple environments.
+#+begin_quote
+- Under X11: `xclip' or `xsel' (https://xclip.sourceforge.net and
+  https://www.vergenet.net/~conrad/software/xsel/ respectively).
+- MacOS: `pbpaste/pbcopy'
+- Cygwin: `getclip/putclip'
+- Under Wayland: `wl-clipboard' (https://github.com/bugaevc/wl-clipboard)
+- Termux: `termux-clipboard-get/set'
+- Emacs: It can also use Emacs's built-in GUI support to talk to the GUI.
+#+end_quote
+
 #+begin_src elisp :tangle emacs/init.el
   ;; Synchronize clipboard
   (use-package xclip
     :straight t
     :config
     (setq xclip-mode 1))
+#+end_src
+
+** Alias
+
+| Alias       | Original function       |
+|-------------+-------------------------|
+| kill-daemon | sava-buffers-kill-emacs |
+
+#+begin_src elisp :tangle emacs/init.el
+  ;; Alias
+  (defun kill-daemon ()
+    "Alias of sava-buffers-kill-emacs"
+    (interactive)
+    (save-buffers-kill-emacs))
 #+end_src
 
 ** Misc
@@ -117,6 +146,7 @@ https://elpa.gnu.org/packages/xclip.html
   (setq inhibit-startup-message t)       ;; Hide Startup Gnus
   (setq visible-bell t)                  ;; Visible bell (t: Enable, nil: Disable)
   (menu-bar-mode -1)                     ;; Menu bar (1: Enable, -1: Disable)
+  (tool-bar-mode -1)                     ;; Tool bar (1: Enable, 0 or negative: Disable)
   (blink-cursor-mode 0)                  ;; Blink Cursor (0: off, 1: blink)
   (show-paren-mode 1)                    ;; Emphasize pair parentheses
   (setq dired-listing-switches "-alhv")  ;; dired human readable
@@ -143,6 +173,7 @@ https://elpa.gnu.org/packages/xclip.html
   ;; (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
   ;; (setq windmove-wrap-around t)              ;; Include mini buffer
 #+end_src
+** Custom file
 
 ** Recentf - keep track of recently opened files
 
@@ -326,7 +357,71 @@ Requirements:
 ** Org-mode
 Org-mode configuration
 
+| Key bind | Description        |
+|----------+--------------------|
+| C-c l    | Store link         |
+| C-c c    | Capture            |
+| C-c a    | Agenda             |
+| C-c b    | Switch Org buffers |
 
+#+begin_src elisp :tangle emacs/init.el
+  (use-package org
+    :straight t
+    :ensure t
+    :config
+    (global-set-key (kbd "C-c l") 'org-store-link)
+    (global-set-key (kbd "C-c c") 'org-capture)
+    (global-set-key (kbd "C-c a") 'org-agenda)
+    (global-set-key (kbd "C-c b") 'org-switchb)
+    (setq org-startup-indented t)
+    (setq org-log-into-drawer t)
+    (setq org-hide-emphasis-markers t)
+    (setq org-hide-leading-stars t)
+    (setq org-startup-indented t)
+    (setq org-fontify-emphasized-text nil)
+    (setq org-deadline-warning-days 14)
+    ;; relative path
+    ;; visual-line-mode
+    ;; org-bullets-mode
+    ;; ;; Open files using external program
+    ;; (setq org-file-apps
+    ;;   '((auto-mode . emacs)
+    ;; ("\\.mm\\'" . default)         ;; default
+    ;; ("\\.x?html?\\'" . default)    ;; default
+    ;; ("\\.pdf\\'" . "open \"%s\"")  ;; modified from ("\\.pdf\\'" . emacs)
+    ;; ("\\.png\\'" . "open \"%s\"")  ;; added
+    ;; ("\\.jpg\\'" . "open \"%s\"")  ;; added
+    ;; ("\\.gif\\'" . "open \"%s\"")  ;; added
+    ;; ("\\.svg\\'" . "open \"%s\"")  ;; added
+    ;; ))
+
+    ;; ;; org-babel activate graphviz dot
+    ;; (org-babel-do-load-languages
+    ;;  'org-babel-load-languages
+    ;;  '((blockdiag . t)
+    ;;    (dot . t)
+    ;;    (mermaid . t)
+    ;;    (ruby . t)
+    ;;    (python . t)
+    ;;    (shell . t)))
+    ;; ;; ob-shell might be different section
+    ;; (require 'ob-shell)
+
+    )
+#+end_src
+
+** Org-superstar
+Decorate org-mode bullets.
+https://github.com/integral-dw/org-superstar-mode
+
+#+begin_src elisp :tangle emacs/init.el
+  (use-package org-superstar
+    :straight t
+    :requires org
+    :hook
+    (org-mode-hook . (lambda() (org-superstar-mode 1)))
+    )
+#+end_src
 ** Markdown-mode
 Markdown mode
 #+begin_src elisp :tangle emacs/init.el
@@ -384,6 +479,15 @@ YAML mode
     :straight t)
 #+end_src
 
+*** nix-mode
+Nix mode
+https://github.com/NixOS/nix-mode
+#+begin_src elisp :tangle emacs/init.el
+  ;; nix-mode
+  (use-package nix-mode
+    :straight t
+    :mode "\\.nix\\'")
+#+end_src
 ** ob-async
 #+begin_src elisp :tangle emacs/init.el
   (use-package ob-async
@@ -404,4 +508,14 @@ Ollama: https://ollama.com
     :bind
     ;; ("C-c o" . ollama-buddy-menu) ;; conflicted with buffer
     ("C-c O" . ollama-buddy-transient-menu-wrapper))
+#+end_src
+
+** Custom file
+Customized configuration per enviornment should be loaded at the last.
+
+#+begin_src elisp :tangle emacs/init.el
+  ;; Custom file
+  (setq custom-file "~/.emacs.d/emacs-custom.el")
+  (when (file-exists-p custom-file)
+    (load custom-file))
 #+end_src

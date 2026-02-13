@@ -183,44 +183,44 @@ Use "locked" mode after switching to the scroll editor
 **** session
 
 #+begin_src conf :tangle zellij/config.kdl
-    session {
-        bind "a" {
-            LaunchOrFocusPlugin "zellij:about" {
-                floating true
-                move_to_focused_tab true
-            }
-            SwitchToMode "normal"
-        }
-        bind "c" {
-            LaunchOrFocusPlugin "configuration" {
-                floating true
-                move_to_focused_tab true
-            }
-            SwitchToMode "normal"
-        }
-        bind "Ctrl o" { SwitchToMode "normal"; }
-        bind "p" {
-            LaunchOrFocusPlugin "plugin-manager" {
-                floating true
-                move_to_focused_tab true
-            }
-            SwitchToMode "normal"
-        }
-        bind "s" {
-            LaunchOrFocusPlugin "zellij:share" {
-                floating true
-                move_to_focused_tab true
-            }
-            SwitchToMode "normal"
-        }
-        bind "w" {
-            LaunchOrFocusPlugin "session-manager" {
-                floating true
-                move_to_focused_tab true
-            }
-            SwitchToMode "normal"
-        }
-    }
+  session {
+      bind "a" {
+          LaunchOrFocusPlugin "zellij:about" {
+              floating true
+              move_to_focused_tab true
+          }
+          SwitchToMode "normal"
+      }
+      bind "c" {
+          LaunchOrFocusPlugin "configuration" {
+              floating true
+              move_to_focused_tab true
+          }
+          SwitchToMode "normal"
+      }
+      bind "Ctrl o" { SwitchToMode "normal"; }
+      bind "p" {
+          LaunchOrFocusPlugin "plugin-manager" {
+              floating true
+              move_to_focused_tab true
+          }
+          SwitchToMode "normal"
+      }
+      bind "s" {
+          LaunchOrFocusPlugin "zellij:share" {
+              floating true
+              move_to_focused_tab true
+          }
+          SwitchToMode "normal"
+      }
+      bind "w" {
+          LaunchOrFocusPlugin "session-manager" {
+              floating true
+              move_to_focused_tab true
+          }
+          SwitchToMode "normal"
+      }
+  }
 #+end_src
 
 **** shared_except "locked"
@@ -452,7 +452,7 @@ Create a scroll back editor specific init file ~scroll-editor-init.el~
   // Choose the base input mode of zellij.
   // Default: normal
   // 
-  // default_mode "locked"
+  default_mode "locked"
    
   // Choose the path to the default shell that zellij will use for opening new panes
   // Default: $SHELL

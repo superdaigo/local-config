@@ -8,20 +8,25 @@ https://ghostty.org/
 - HackGen Console NF (https://github.com/yuru7/HackGen)
 
 * Generate config file
-#+begin_src elisp
-  ;; Generate file
+#+begin_src elisp :results none
+  ;; Generate file(s)
   (org-babel-tangle-file "ghostty.org")
-  (setq-local dest-file (expand-file-name "~/.config/ghostty/config"))
-  (setq-local backup-prefix (concat "ghostty/" (format-time-string "%Y-%m-%d_%H%M%S_")))
-  ;; Take backup
-  (if (file-exists-p dest-file)
-      (copy-file dest-file (concat backup-prefix "config"))
-    nil)
-  ;; Save new file
-  (copy-file "ghostty/config" dest-file t)
+  (setq-local config-files (list "config"))
+  (setq-local tmp-dir "ghostty")
+  (setq-local dst-dir (expand-file-name "~/.config/ghostty"))
+  ;; Copy current files and deploy
+  (setq-local backup-prefix (format-time-string "%Y-%m-%d_%H%M%S_"))
+  (dolist (config-file config-files)
+    (setq-local tmp-file (file-name-concat tmp-dir config-file))
+    (setq-local bak-file (file-name-concat tmp-dir (concat backup-prefix config-file)))
+    (setq-local dst-file (file-name-concat dst-dir config-file))
+    ;; Take backup
+    (if (file-exists-p dst-file)
+        (copy-file dst-file bak-file)
+      nil)
+    ;; Save new file
+    (copy-file tmp-file dst-file t))
 #+end_src
-
-#+RESULTS:
 
 * Config
 See the official document for the details
@@ -38,7 +43,7 @@ https://github.com/yuru7/HackGen
   font-family = "HackGen Console NF"
   font-size = 16
   # Background
-  background-opacity = 0.87
+  background-opacity = 0.9
   # No initial window
   initial-window = false
   # Use non-native full screen
