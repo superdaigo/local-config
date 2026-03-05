@@ -1,12 +1,19 @@
-* Settings of my local environment
+* Local Configurations
 
-I have multiple enironments but I cannot leave from Emacs environment.
-Fortunately, Emacs works on multiple environments and Linux like enviornment is available on multiple OSs even on Windows (WSL).
+Here are my configurations defined using Org-tangle file.
 
 ** Emacs
+[[file:emacs.org][emacs.org]]
+
+** Nix-Darwin
+[[file:nix-darwin.org][nix-darwin.org]]
 
 ** Tmux
+[[file:tmux.org][tmux.org]]
+
+** Zellij
+[[file:zellij.org][zellij.org]]
 
 ** Zsh
+[[file:zsh.org][zsh.org]]
 
-Zsh is available only on Linux/WSL and macOS.
