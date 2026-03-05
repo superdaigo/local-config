@@ -173,7 +173,6 @@ It works in multiple environments.
   ;; (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
   ;; (setq windmove-wrap-around t)              ;; Include mini buffer
 #+end_src
-** Custom file
 
 ** Recentf - keep track of recently opened files
 
@@ -506,12 +505,14 @@ Ollama: https://ollama.com
   (use-package ollama-buddy
     :straight t
     :bind
-    ;; ("C-c o" . ollama-buddy-menu) ;; conflicted with buffer
+    ;; ("C-c o" . ollama-buddy-menu)  ;; conflicts with consult-outline
     ("C-c O" . ollama-buddy-transient-menu-wrapper))
 #+end_src
 
 ** Custom file
-Customized configuration per enviornment should be loaded at the last.
+
+Customized configuration differs per enviornment.
+This settings must be loaded at the last.
 
 #+begin_src elisp :tangle emacs/init.el
   ;; Custom file
