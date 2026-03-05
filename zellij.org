@@ -23,6 +23,8 @@
         nil)
       ;; deploy
       (copy-file src-file-path dst-file-path t)))
+  ;; Copy scroll-editor-init.el
+  (copy-file (file-name-concat tmp-dir "scroll-editor-init.el") (file-name-concat dest-dir "scroll-editor-init.el") t)
 #+end_src
 
 #+RESULTS:
@@ -531,6 +533,7 @@ Create a scroll back editor specific init file ~scroll-editor-init.el~
   // copy_command "pbcopy"                     // osx
   // 
   // copy_command "pbcopy"
+  copy_command "xclip -selection clipboard" // x11
    
   // Choose the destination for copied text
   // Allows using the primary selection buffer (on x11/wayland) instead of the system clipboard.

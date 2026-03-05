@@ -53,6 +53,23 @@ Tested on tmux 3.4
   bind - split-window -v
 #+end_src
 
+** Switch pane
+
+Add switch pane key bindings (~vi~ and ~emacs~ style).
+
+#+begin_src conf :tangle tmux/.tmux.conf
+  # select pane vi style
+  bind h select-pane -L
+  bind j select-pane -D
+  bind k select-pane -U
+  bind l select-pane -R
+  # select pane emacs style
+  bind "C-b" select-pane -L
+  bind "C-n" select-pane -D
+  bind "C-p" select-pane -U
+  bind "C-f" select-pane -R
+#+end_src
+
 ** Copy to clipboard - Linux
 
 This requires ~xsel~ command.
@@ -94,5 +111,3 @@ Enables simple mouse operations.
   # Turn on simple mouse operation
   set -g mouse on
 #+end_src
-
-
