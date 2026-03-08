@@ -72,3 +72,21 @@ Linux keybinding
   # Yakuake-like termial
   keybind = global:ctrl+backquote=toggle_quick_terminal
 #+end_src
+* Register Terminal Type `xterm-ghostty`
+I got an error when launching emacsclient in Ghostty on macOS.
+
+#+begin_quote
+*ERROR*: Terminal type xterm-ghostty is not defined
+#+end_quote
+
+Here is how to fix the error.
+
+1. Create terminfo file `/tmp/ghostty.terminfo` based on `xterm-256color`
+   #+begin_src bash
+     infocmp xterm-256color > /tmp/xterm-ghostty.src
+   #+end_src
+2. Modify the 1st line replacing `xterm-256color|` to `xterm-ghostty|`
+3. Register `xterm-ghostty` to local terminfo file `~/.terminfo`
+   #+begin_src bash
+     tic -x -o ~/.terminfo /tmp/xterm-ghostty.src
+   #+end_src
