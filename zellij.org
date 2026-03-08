@@ -63,12 +63,22 @@ Bind "-" and "|" keys to splitting a pane.
 
 #+begin_src conf :tangle zellij/config.kdl
   pane {
-    bind "-" { NewPane "down"; SwitchToMode "normal"; }
-    bind "|" { NewPane "right"; SwitchToMode "normal"; }
+    bind "-" { NewPane "down"; }
+    bind "|" { NewPane "right"; }
   }
   tmux {
-    bind "-" { NewPane "down"; SwitchToMode "normal"; }
-    bind "|" { NewPane "right"; SwitchToMode "normal"; }
+    bind "-" { NewPane "down"; SwitchToMode "locked"; }
+    bind "|" { NewPane "right"; SwitchToMode "locked"; }
+  }
+#+end_src
+
+**** Toggle focus full screen
+
+Change to Locked mode after switching to/from full screen.
+
+#+begin_src conf :tangle zellij/config.kdl
+  pane {
+    bind "f" { ToggleFocusFullscreen; SwitchToMode "locked"; }
   }
 #+end_src
 
