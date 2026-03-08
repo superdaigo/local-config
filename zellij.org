@@ -156,6 +156,8 @@ Current approach is creating the ~scroll-editor.sh~ file under the ~$HOME/.local
 
 *** Emacs launch file - ~scroll-editor.sh~
 
+This works both Linux and macOS.
+
 #+begin_src bash :tangle ~/.local/bin/scroll-editor.sh :shebang "#!/usr/bin/env bash" :mkdirp yes
   # Launch Emacs for Zellij Scroll Editor
 
