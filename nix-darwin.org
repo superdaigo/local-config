@@ -1,5 +1,11 @@
 [Work in progress]
+* Deploy
+* Config
+** Head
+** Package version
+** Apps to install
 
+** Foot
 #+begin_src nix
   {
     description = "Simple nix-darwin system flake";
