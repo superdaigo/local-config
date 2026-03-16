@@ -1,3 +1,29 @@
+#+TITLE: Zsh configuration
+* Deploy
+#+begin_src elisp :results none
+  ;; local variables
+  (setq-local config-files (list ".zshrc" ".zshenv"))
+  (setq-local dst-dir (expand-file-name "~/"))
+  (setq-local tmp-dir (file-name-base buffer-file-name))
+  (setq-local backup-prefix (format-time-string "%Y-%m-%d_%H%M%S_"))
+  ;; Create directories
+  (dolist (dir-name (list dst-dir tmp-dir (file-name-concat dst-dir "file-backup")))
+    (make-directory dir-name t))
+  ;; Generate file
+  (org-babel-tangle-file buffer-file-name)
+  ;; Copy current files and deploy
+  (dolist (config-file config-files)
+    (let ((tmp-file (file-name-concat tmp-dir config-file))
+          (bak-file (file-name-concat tmp-dir (concat backup-prefix config-file)))
+          (dst-file (file-name-concat dst-dir config-file)))
+      ;; Take backup
+      (if (file-exists-p dst-file)
+          (copy-file dst-file bak-file)
+        nil)
+      ;; Save new file
+      (copy-file tmp-file dst-file t)))
+#+end_src
+
 * Zsh configuration
 
 Copied from the current file.
@@ -44,7 +70,7 @@ TODO: Clean up
   setopt noflowcontrol
   ## 
   # export EDITOR='emacs -nw'
-  export EDITOR='emacsclient -nw'
+  export EDITOR="emacs -nw -Q"
   # export LANG=ja_JP.UTF-8
   export LANG=en_US.UTF-8
   ## prompt
@@ -93,8 +119,8 @@ TODO: Clean up
 
   ## aws command
   # if which aws_zsh_completer.sh > /dev/null; then source `which aws_zsh_completer.sh`; fi
-  # home bin
-  PATH="${HOME}/bin:${PATH}"
+  # home .local/bin
+  PATH="${PATH}/.local/bin:${PATH}"
 
   ## rbenv
   if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
@@ -106,10 +132,15 @@ TODO: Clean up
   if which goenv > /dev/null; then eval "$(goenv init -)"; fi
   ## direnv
   if which direnv > /dev/null; then eval "$(direnv hook zsh)"; fi
+  ## emacs
+  if [ -d "/Applications/Emacs.app/Contents/MacOS" ]; then
+    PATH="/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
+    export EDITOR="emacs-nw -Q"
+  fi
 
   export PATH
-
-  ## aliaas
+  
+  ## alias
   alias ls='ls -Gp'
   alias ll='ls -l'
   alias la='ls -la'
