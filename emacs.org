@@ -356,7 +356,7 @@ Requirements:
     :if (when (get-cmigemo-path) t)  ;; install migemo only if the cmigemo installed
     :config
     (setq migemo-command (get-cmigemo-path))
-    (setq migemo-directory (get-cmigemo-dict-path migemo-command))
+    (setq migemo-dictionary (get-cmigemo-dict-path migemo-command))
     (migemo-init))
 #+end_src
 
