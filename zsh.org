@@ -79,48 +79,51 @@ TODO: Clean up
   # # $ 
   # export PS1="%{${fg[red]}%}[%n@%m]%{${reset_color}%} %~
   # $ "
-  # git-prompt.sh
-  if type brew >/dev/null && [ -d $(brew --prefix) ]; then
-    source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
-  fi
-  setopt PROMPT_SUBST
-  export GIT_PS1_SHOWCOLORHINTS=1     # works when use with precmd()
-  export GIT_PS1_SHOWDIRTYSTATE=1
-  export GIT_PS1_SHOWUPSTREAM="auto"
-  # # [~]                                       (master=)
+  # # git-prompt.sh
+  # if type brew >/dev/null && [ -d $(brew --prefix) ]; then
+  #   source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+  # fi
+  # setopt PROMPT_SUBST
+  # export GIT_PS1_SHOWCOLORHINTS=1     # works when use with precmd()
+  # export GIT_PS1_SHOWDIRTYSTATE=1
+  # export GIT_PS1_SHOWUPSTREAM="auto"
+  # # # [~]                                       (master=)
+  # # # $ 
+  # # function get_pwd() {
+  # #     echo "${PWD/$HOME/~}"
+  # # }
+  # # function put_spacing() {
+  # #     # [] + spaces for virtual env
+  # #     local prompt_brace=(2 + 10)
+  # #     # git prompt width
+  # #     local git="$(__git_ps1 "(%s)")"
+  # #     if [ ${#git} == 0 ]; then
+  # # 	git=""
+  # #     fi
+  # #     # calculate
+  # #     local termwidth
+  # #     (( termwidth = ${COLUMNS} - (${prompt_brace} + ${#$(get_pwd)} + ${#git})))
+  # #     # spacing
+  # #     local spacing=""
+  # #     for i in {1..$termwidth}; do
+  # # 	spacing="${spacing} "
+  # #     done
+  # #     echo $spacing
+  # # }
+  # # PROMPT='[$(get_pwd)]$(put_spacing)$(__git_ps1 "(%s)")
+  # # $ '
+  # # [~/path](master=)
   # # $ 
-  # function get_pwd() {
-  #     echo "${PWD/$HOME/~}"
-  # }
-  # function put_spacing() {
-  #     # [] + spaces for virtual env
-  #     local prompt_brace=(2 + 10)
-  #     # git prompt width
-  #     local git="$(__git_ps1 "(%s)")"
-  #     if [ ${#git} == 0 ]; then
-  # 	git=""
-  #     fi
-  #     # calculate
-  #     local termwidth
-  #     (( termwidth = ${COLUMNS} - (${prompt_brace} + ${#$(get_pwd)} + ${#git})))
-  #     # spacing
-  #     local spacing=""
-  #     for i in {1..$termwidth}; do
-  # 	spacing="${spacing} "
-  #     done
-  #     echo $spacing
-  # }
-  # PROMPT='[$(get_pwd)]$(put_spacing)$(__git_ps1 "(%s)")
-  # $ '
-  # [~/path](master=)
-  # $ 
-  PROMPT='[%~]$(__git_ps1 "(%s)")
+  # PROMPT='[%~]$(__git_ps1 "(%s)")
+  # %% '
+
+  PROMPT='[%~]
   %% '
 
   ## aws command
   # if which aws_zsh_completer.sh > /dev/null; then source `which aws_zsh_completer.sh`; fi
   # home .local/bin
-  PATH="${PATH}/.local/bin:${PATH}"
+  PATH="${HOME}/.local/bin:${PATH}"
 
   ## rbenv
   if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
@@ -139,24 +142,24 @@ TODO: Clean up
   fi
 
   export PATH
-  
+
   ## alias
   alias ls='ls -Gp'
   alias ll='ls -l'
   alias la='ls -la'
-  alias e='emacsclient -nw'
-  alias ec='emacsclient -nc'
+  # alias e='emacsclient -nw'
+  # alias ec='emacsclient -nc'
   alias ta='if ! $(tmux attach-session) ; then tmux; fi'
   alias tl='tmux list-session'
-  alias d='docker'
-  alias di='docker images'
-  alias ds='docker ps'
-  alias magit='emacsclient -nw -e \(magit-status\)'
-  if which brew > /dev/null; then
-    if [ -f "$(brew --prefix pyenv)/bin/pyenv" ]; then
-      alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
-    fi
-  fi
+  # alias d='docker'
+  # alias di='docker images'
+  # alias ds='docker ps'
+  # alias magit='emacsclient -nw -e \(magit-status\)'
+  # if which brew > /dev/null; then
+  #   if [ -f "$(brew --prefix pyenv)/bin/pyenv" ]; then
+  #     alias brew='env PATH="${PATH//$(pyenv root)\/shims:/}" brew'
+  #   fi
+  # fi
   # ssh-agent
   if [ ! -f "$(ssh-add -l | grep "ssh" | cut -d' ' -f3 | head -n1)" ] ; then
     ssh-add --apple-load-keychain
@@ -172,7 +175,7 @@ TODO: Clean up
   # The next line enables shell command completion for gcloud.
   if [ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/google-cloud-sdk/completion.zsh.inc"; fi
 
-  . "$HOME/.local/bin/env"
+  # . "$HOME/.local/bin/env"
 #+end_src
 
 ** ~.zshenv~
@@ -182,12 +185,12 @@ TODO: Clean up
   # disable special creation/extraction of ._* files by tar, etc. on Mac OS X
   COPYFILE_DISABLE=1; export COPYFILE_DISABLE
 
-  ## git-prompt.sh
-  # % cp /usr/local/etc/bash_completion.d/git-prompt.sh "$HOME/.zsh.d/"
-  source ~/.zsh.d/git-prompt.sh
-  if [ "$EMACS" ];then
-    export TERM=eterm-color
-  fi
+  # ## git-prompt.sh
+  # # % cp /usr/local/etc/bash_completion.d/git-prompt.sh "$HOME/.zsh.d/"
+  # source ~/.zsh.d/git-prompt.sh
+  # if [ "$EMACS" ];then
+  #   export TERM=eterm-color
+  # fi
 
   # ## Rust
   # . "$HOME/.cargo/env"
