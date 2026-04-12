@@ -457,7 +457,7 @@ Integrate consult with denote
   (use-package consult-denote
     :straight t
     :ensure t
-    :requires denote
+    :after denote
     :bind
     (("C-c n f" . consult-denote-find)
      ("C-c n g" . consult-denote-grep))
@@ -527,6 +527,14 @@ Markdown mode
 #+begin_src elisp :tangle emacs/init.el
   ;; markdown-mode
   (use-package markdown-mode
+    :straight t)
+#+end_src
+
+** Github Flavored Markdown Exporter for Org Mode
+
+#+begin_src elisp :tangle emacs/init.el
+  ;; ox-gfm
+  (use-package ox-gfm
     :straight t)
 #+end_src
 
