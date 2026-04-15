@@ -56,11 +56,9 @@ TODO: Clean up
   zstyle ':completion:*:default' menu select=1
   HISTSIZE=1000000
   SAVEHIST=1000000
-  # Symbolic link of HISTFILE is replaced actual file. Because zsh
-  # maintains history file like write out copy and rename it over the
-  # old one. So we need to specify actual file here.
+  # Default history file location: ~/.zsh_history
+  # Symbolic link doesn't work, since zsh replaces it with a new file when updating.
   # HISTFILE=~/.zsh_history
-  HISTFILE=~/.zsh.d/.zsh_history
   setopt hist_ignore_all_dups
   setopt hist_ignore_space
   setopt hist_reduce_blanks

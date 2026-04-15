@@ -28,7 +28,7 @@ Press ~C-z :~ and execute ~source-file ~/.tmux.conf~
 
 * Tmux configuration
 
-Tested on tmux 3.4
+Tested on tmux 3.6a
 
 ** Head of ~.tmux.conf~ file
 
@@ -70,6 +70,13 @@ Add switch pane key bindings (~vi~ and ~emacs~ style).
   bind "C-f" select-pane -R
 #+end_src
 
+** Use emacs keys
+
+#+begin_src conf :tangle tmux/.tmux.conf
+# Use emacs keys
+set-window-option -g mode-keys emacs
+#+end_src
+
 ** Copy to clipboard - Linux
 
 This requires ~xsel~ command.
@@ -81,13 +88,15 @@ This requires ~xsel~ command.
 
 ** Copy to clipboard - macOS
 
+~reattach-to-user-namespace~ is not needed after tmux version 2.6!
+
 This requires ~reattach-to-user-namespace~ command.
 
 #+begin_src conf :tangle (if (eq system-type 'darwin) "tmux/.tmux.conf" "")
-  # brew install reattach-to-user-namespace
-  set-option -g default-command "reattach-to-user-namespace -l $SHELL"
-  # Sync clipboard when copy-mode C-w
-  bind-key -T copy-mode M-w send-keys -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"\; display-message "copied to system clipboard"
+  # # Install reattach-to-user-namespace
+  # set-option -g default-command "reattach-to-user-namespace -l $SHELL"
+  # # Sync clipboard when copy-mode C-w
+  # bind-key -T copy-mode M-w send-keys -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"\; display-message "copied to system clipboard"
 #+end_src
 
 

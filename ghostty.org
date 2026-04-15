@@ -14,6 +14,9 @@ https://ghostty.org/
   (setq-local config-files (list "config"))
   (setq-local tmp-dir "ghostty")
   (setq-local dst-dir (expand-file-name "~/.config/ghostty"))
+  ;; Create directories
+  (dolist (dir-name (list dst-dir tmp-dir))
+    (make-directory dir-name t))
   ;; Copy current files and deploy
   (setq-local backup-prefix (format-time-string "%Y-%m-%d_%H%M%S_"))
   (dolist (config-file config-files)
@@ -42,6 +45,8 @@ https://github.com/yuru7/HackGen
   # Font
   font-family = "HackGen Console NF"
   font-size = 16
+  # Meta key (for mac)
+  macos-option-as-alt = left
   # Background
   background-opacity = 0.9
   # No initial window
@@ -63,8 +68,10 @@ Keybinds are different per OS
 
 Mac keybinding
 #+begin_src conf :tangle (if (eq system-type 'darwin) "ghostty/config" "")
-  # Yakuake-like termial
-  keybind = global:cmd+escape=toggle_quick_terminal
+  # # Yakuake-like termial
+  # keybind = global:cmd+escape=toggle_quick_terminal
+  # Left option key as Meta key  # left, right, true (or both)
+  macos-option-as-alt = left
 #+end_src
 
 Linux keybinding
@@ -72,6 +79,7 @@ Linux keybinding
   # Yakuake-like termial
   keybind = global:ctrl+backquote=toggle_quick_terminal
 #+end_src
+
 * Register Terminal Type `xterm-ghostty`
 I got an error when launching emacsclient in Ghostty on macOS.
 

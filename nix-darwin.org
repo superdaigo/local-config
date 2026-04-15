@@ -54,10 +54,10 @@
           keka
           nmap
           ripgrep
-          # podman
+          podman
           # podman-tui
           # python3Full
-          reattach-to-user-namespace
+          # reattach-to-user-namespace
           sqlite
           tmux
           uv
