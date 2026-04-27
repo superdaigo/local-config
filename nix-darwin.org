@@ -53,8 +53,10 @@
           jq
           keka
           nmap
+          osv-scanner
           ripgrep
           podman
+          podman-compose
           # podman-tui
           # python3Full
           # reattach-to-user-namespace
