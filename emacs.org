@@ -404,15 +404,16 @@ Org-mode configuration
     ;; ("\\.svg\\'" . "open \"%s\"")  ;; added
     ;; ))
 
-    ;; ;; org-babel activate graphviz dot
-    ;; (org-babel-do-load-languages
-    ;;  'org-babel-load-languages
-    ;;  '((blockdiag . t)
-    ;;    (dot . t)
-    ;;    (mermaid . t)
-    ;;    (ruby . t)
-    ;;    (python . t)
-    ;;    (shell . t)))
+    ;; org-babel activate graphviz dot
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((shell . t)
+       (dot . t)
+       (ruby . t)
+       (python . t)
+       ;;(blockdiag . t)
+       ;;(mermaid . t)
+       ))
     ;; ;; ob-shell might be different section
     ;; (require 'ob-shell)
     )
@@ -420,7 +421,6 @@ Org-mode configuration
 
 ** Denote
 https://protesilaos.com/emacs/denote
-Create denote under Nextcloud directory
 #+begin_src elisp :tangle emacs/init.el
   (use-package denote
     :straight t
@@ -435,7 +435,7 @@ Create denote under Nextcloud directory
      ("C-c n d" . denote-dired)
      ("C-c n g" . denote-grep))
     :config
-    (setq denote-directory (expand-file-name "~/Nextcloud/Documents/denote"))
+    (setq denote-directory (expand-file-name "~/Documents/denote"))
     ;; Automatically rename Denote buffers when opening them
     (denote-rename-buffer-mode 1)
     (with-eval-after-load 'org-capture
@@ -447,6 +447,8 @@ Create denote under Nextcloud directory
                      :immediate-finish nil
                      :kill-buffer t
                      :jump-to-captured t)))
+    ;; Org Agenda
+    (setq org-agenda-files (append org-agenda-files (list denote-directory)))
     )
 #+end_src
 
@@ -482,7 +484,8 @@ Extra org integration
      denote-org-dblock-insert-links
      denote-org-dblock-insert-backlinks
      denote-org-dblock-insert-missing-links
-     denote-org-dblock-insert-files-as-headings))
+     denote-org-dblock-insert-files-as-headings)
+  )
 #+end_src
 
 ** denote-journal
@@ -498,15 +501,32 @@ Extra org integration
     :config
     ;; Use the "journal" subdirectory of the `denote-directory'.  Set this
     ;; to nil to use the `denote-directory' instead.
-    ;; (setq denote-journal-directory
-    ;;       (expand-file-name "journal" denote-directory))
-    (setq denote-journal-directory (expand-file-name "~/Nextcloud/Documents/denote-journal"))
+    (setq denote-journal-directory
+          (expand-file-name "journal" denote-directory))
 
     ;; Default keyword for new journal entries. It can also be a list of
     ;; strings.
     (setq denote-journal-keyword "journal")
     ;; Read the doc string of `denote-journal-title-format'.
-    (setq denote-journal-title-format 'day-date-month-year))
+    ;; (setq denote-journal-title-format 'day-date-month-year)
+    (setq denote-journal-title-format "%Y-%m-%d %A")
+    ;; Set category
+    (setq denote-templates
+          '((journal . "#+CATEGORY: journal\n\n"))))
+#+end_src
+
+** denote-agenda
+https://github.com/emacsmirror/denote-agenda
+
+#+begin_src elisp :tangle emacs/init.el
+  (use-package denote-agenda
+    :straight t
+    :ensure t
+    :config
+    :requires denote-org denote-journal
+    ;; (setq denote-agenda-include-journal-limit 60)
+    (denote-agenda-insinuate)
+  )
 #+end_src
 
 ** Org-superstar

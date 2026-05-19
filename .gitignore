@@ -17,6 +17,7 @@ Thumbs.db
 # Custom ignore files
 emacs/
 ghostty/
+nix-darwin/
 tmux/
 zellij/
 zsh/
