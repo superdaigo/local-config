@@ -23,7 +23,37 @@
       ;; Save new file
       (copy-file tmp-file dst-file t)))
 #+end_src
+* Commands
+** Init
+#+begin_src bash
+  sudo nix run nix-darwin/nix-darwin-25.11#darwin-rebuild --extra-experimental-features 'flakes nix-command' -- switch --flake /etc/nix-darwin#simple
+#+end_src
+** Rebuild
+#+begin_src bash
+  sudo darwin-rebuild build --flake /etc/nix-darwin#simple
+#+end_src
+** Switch to the new build
+#+begin_src bash
+  sudo darwin-rebuild switch --flake /etc/nix-darwin#simple
+#+end_src
+** List generations
+#+begin_src bash
+  sudo darwin-rebuild --list-generations
+#+end_src
+** Switch to a specific generation
+#+begin_src bash
+  sudo darwin-rebuild --switch-generation N
+#+end_src
+** Delete Cache and previous builds
+Delete generations older than 14days
+#+begin_src bash
+  sudo nix-collect-garbage --delete-older-than 14d
+#+end_src
 
+Delete all generations
+#+begin_src bash
+  sudo nix-collect-garbage -d
+#+end_src
 * Config
 ** Head
 #+begin_src nix :tangle nix-darwin/flake.nix
@@ -34,7 +64,6 @@
 
 ** Package version
 ** Apps to install
-
 ** Foot
 #+begin_src nix :tangle nix-darwin/flake.nix
   {
@@ -71,6 +100,7 @@
           awscli2
           cmigemo
           curl
+          direnv
           ffmpeg-full
           git
           gh
