@@ -172,6 +172,7 @@ It works in multiple environments.
   ;; ;; windmove Move around splitted windows -> conflicted org-mode keybinding
   ;; (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
   ;; (setq windmove-wrap-around t)              ;; Include mini buffer
+  (global-set-key (kbd "M-m") 'kmacro-call-macro)  ;; call kmacro
 #+end_src
 
 ** Line number
