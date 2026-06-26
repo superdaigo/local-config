@@ -114,6 +114,7 @@ Delete all generations
           keka
           marp-cli
           nmap
+          nodejs
           osv-scanner
           ripgrep
           podman
