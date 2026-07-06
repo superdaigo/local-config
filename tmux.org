@@ -99,6 +99,16 @@ This requires ~reattach-to-user-namespace~ command.
   # bind-key -T copy-mode M-w send-keys -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"\; display-message "copied to system clipboard"
 #+end_src
 
+** Disable Passthrough by default
+Tutn off `allow-passthroug` explicitly so that `:set allow-passthrough` enables only on the active window(panes) instead of all windows.
+
+#+begin_src conf :tangle tmux/.tmux.conf
+  # Turn off allow-passthrough explicitly by default for security
+  # It passes escape sequences (e.g., hyperlinks, images) directly to the terminal emulator,
+  # which could be exploited for screen manipulation or prompt injection if misused.
+  # Note: `:set allow-passthrough` toggles the value on the active window
+  set -g allow-passthrough off
+#+end_src
 
 ** True Color
 
