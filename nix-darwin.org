@@ -125,6 +125,8 @@ Delete all generations
           sqlite
           terraform
           tmux
+          trufflehog
+          typst
           uv
           # vagrant
           wireshark
