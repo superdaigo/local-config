@@ -151,6 +151,7 @@ It works in multiple environments.
   (show-paren-mode 1)                    ;; Emphasize pair parentheses
   (setq dired-listing-switches "-alhv")  ;; dired human readable
   (global-unset-key (kbd "C-z"))         ;; disable minimize window on macOS GUI mode. The key also assigned to the default tmux key in terminal.
+  (setq delete-by-moving-to-trash t)     ;; Move deleted files to trash
 
   ;; Display cursor position
   (line-number-mode t)                   ;; Line number
