@@ -41,7 +41,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html
 #+end_src
 
 ** Disable packages
-
 Disable ~packages~ to make sure to use ~straight.el~ for package management.
 
 #+begin_src elisp :tangle emacs/early-init.el
@@ -168,12 +167,74 @@ It works in multiple environments.
   (setq-default indent-tabs-mode nil)    ;; No tab
   (electric-indent-mode 0)               ;; Prevent auto-indent when pasting
   ;; Font lock
-  (setq font-lock-global-modes t)
+  ;; (setq font-lock-global-modes t)
   (setq text-mode-hook 'turn-off-auto-fill)  ;; Turn off auto-fill
-  ;; ;; windmove Move around splitted windows -> conflicted org-mode keybinding
-  ;; (windmove-default-keybindings 'meta)       ;; Meta + arrow keys
-  ;; (setq windmove-wrap-around t)              ;; Include mini buffer
+
   (global-set-key (kbd "M-m") 'kmacro-call-macro)  ;; call kmacro
+
+#+end_src
+
+** GUI Config
+
+Font: HackGen Console NF
+https://github.com/yuru7/HackGen
+
+#+begin_src elisp :tangle emacs/init.el
+  (defun setup-fonts ()
+    (let ((font-name "HackGen Console NF"))
+      ;; 全環境共通：デフォルト・固定幅フォントの設定
+      (set-face-attribute 'default nil :family font-name :height 140)
+      (set-face-attribute 'fixed-pitch nil :family font-name :height 140)
+      ;; GUI環境のみ：フォントセットの設定（非GUIではエラーになるためガード）
+      (when (display-graphic-p)
+        (let ((fontspec (font-spec :family font-name)))
+          (set-fontset-font t 'japanese-jisx0208 fontspec)
+          (set-fontset-font t 'katakana-jisx0201 fontspec)
+          (set-fontset-font t 'japanese-jisx0212 fontspec)
+          (dolist (w '((basement . #x2000)
+                       (kana . #x3000)
+                       (cjk-misc . #x3000)
+                       (kanji . #x4e00)))
+            (set-fontset-font nil (car w) fontspec))))))
+
+  ;; デーモン起動時（非GUI）でのエラー回避 + GUIフレーム作成時に自動適用
+  (add-hook 'after-make-frame-functions
+            (lambda (frame)
+              (with-selected-frame frame
+                (when (display-graphic-p)
+                  (setup-fonts)))))
+  ;; 初回からGUI環境の場合は即座に適用
+  (when (display-graphic-p)
+    (setup-fonts))
+
+  ;;----
+  ;; (when (display-graphic-p)
+  ;;   ;; (setq language-environment 'Japanese)
+  ;;
+  ;;   ;; HackGen Console NF
+  ;;   (add-to-list 'default-flame-alist '(font . "HackGen Console NF-14"))
+  ;;   ;; デフォルトフォント（半角英数）の設定
+  ;;   (set-face-attribute 'default nil :family "HackGen Console NF" :height 140)
+  ;;
+  ;;   (let ((fontspec (font-spec :family "HackGen Console NF")))
+  ;;     (set-fontset-font t 'japanese-jisx0208 fontspec)
+  ;;     (set-fontset-font t 'katakana-jisx0201 fontspec)
+  ;;     (set-fontset-font t 'japanese-jisx0212 fontspec))
+  ;;     ;; 日本語（漢字・ひらがな・カタカナ）のフォント設定
+  ;;   (let ((ws '((basement . #x2000)
+  ;;               (kana . #x3000)
+  ;;               (cjk-misc . #x3000)
+  ;;               (kanji . #x4e00))))
+  ;;     (dolist (w ws)
+  ;;       (set-fontset-font nil (car w) (font-spec :family "HackGen Console NF"))))
+  ;; 
+  ;;   ;; ;; Valign
+  ;;   ;; (use-package valign
+  ;;   ;;   :straight t
+  ;;   ;;   :ensure t
+  ;;   ;;   :config
+  ;;   ;;   (global-valign-mode 1))
+  ;;   )
 #+end_src
 
 ** Line number
@@ -308,10 +369,12 @@ Execute ~M-x skk-get~ to download Jisyo files under ~${HOME}/.emacs.d/skk-get-ji
   ;; ddskk
   (use-package ddskk
     :straight t
+    :ensure t
     :config
     ;; Set ddskk as a default Japanese input method
     (setq default-input-method "japanese-skk")
     ;; Dictionary files
+    (setq skk-jisyo '("~/skk-jisyo.utf-8" . utf-8))
     (setq dir-skk-get-jisyo (expand-file-name "~/.emacs.d/skk-get-jisyo/"))
     (setq skk-large-jisyo (concat dir-skk-get-jisyo "SKK-JISYO.L"))
     ;; Download SKK jisyo files if not exists
@@ -360,6 +423,42 @@ Requirements:
     (setq migemo-command (get-cmigemo-path))
     (setq migemo-dictionary (get-cmigemo-dict-path migemo-command))
     (migemo-init))
+#+end_src
+** Ghostel
+https://github.com/dakra/ghostel
+#+begin_src elisp :tangle emacs/init.el
+  (use-package ghostel
+    :straight t
+    :ensure t
+    :bind (("C-x m" . ghostel)
+           :map project-prefix-map
+                ("m" . ghostel-project)
+                ("M" . ghostel-project-list-buffers))
+    :config
+    (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
+    (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t)
+    (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer))
+  )
+  (use-package ghostel-ime
+    :hook (ghostel-mode . ghostel-ime-mode))
+#+end_src
+** Theme vscode-dark-plus
+https://github.com/ianyepan/vscode-dark-plus-emacs-theme
+#+begin_src elisp :tangle emacs/init.el
+  (use-package vscode-dark-plus-theme
+    :straight t
+    :ensure t
+    :config
+    (load-theme 'vscode-dark-plus t)
+    ;; Remove the border around the TODO word on org-mode files
+    (setq vscode-dark-plus-box-org-todo nil)
+    ;; Do not set different heights for some org faces
+    (setq vscode-dark-plus-scale-org-faces nil)
+    ;; Avoid inverting hl-todo face
+    (setq vscode-dark-plus-invert-hl-todo nil)
+    ;; Configure current line highlighting style (works best with Emacs 28 or newer)
+    (setq vscode-dark-plus-render-line-highlight 'line)
+  )
 #+end_src
 
 ** Org-mode
@@ -413,6 +512,7 @@ Org-mode configuration
        (dot . t)
        (ruby . t)
        (python . t)
+       (gptel . t)
        ;;(blockdiag . t)
        ;;(mermaid . t)
        ))
@@ -553,7 +653,11 @@ Markdown mode
     :ensure nil
     :mode ("\\.md\\'" "\\.mdx\\'" "\\.markdown\\'")
     :config
-    (require 'markdown-ts-mode-x))
+    (require 'markdown-ts-mode-x)
+    ;; 見出し以外の主要なフェイスに default のフォント設定を一括適用
+    ;; (mapc (lambda (face) (custom-set-faces `(,face ((t (:inherit default :family nil :height 1.0))))))
+    ;;       '(markdown-table-face markdown-inline-code-face markdown-code-face markdown-pre-face markdown-markup-face))
+    )
 #+end_src
 
 ** Github Flavored Markdown Exporter for Org Mode
@@ -565,6 +669,15 @@ Markdown mode
 #+end_src
 
 ** Programming Language
+*** go-ts-mode
+
+#+begin_src elisp :tangle emacs/init.el
+  ;; go-ts-mode
+  (use-package go-ts-mode
+    :ensure nil
+    :mode "\\.go\\'")
+#+end_src
+
 *** js-ts-mode
 #+begin_src elisp :tangle emacs/init.el
   ;; js2-mode
@@ -587,24 +700,6 @@ Markdown mode
     (setq js-expr-indent-offset 2))
 #+end_src
 
-*** powershell
-PoserShell mode
-#+begin_src elisp :tangle emacs/init.el
-  ;; powershell mode
-  (use-package powershell
-    :straight t)
-#+end_src
-
-*** yaml-ts-mode
-#+begin_src elisp :tangle emacs/init.el
-  ;; yaml-ts-mode
-  (use-package yaml-ts-mode
-    :ensure nil
-    :mode (("\\.yml\\'" . yaml-ts-mode)
-           ("\\.yaml\\'" . yaml-ts-mode))
-    )
-#+end_src
-
 *** nix-mode
 Nix mode
 https://github.com/NixOS/nix-mode
@@ -613,6 +708,28 @@ https://github.com/NixOS/nix-mode
   (use-package nix-mode
     :straight t
     :mode "\\.nix\\'")
+#+end_src
+
+*** powershell
+PoserShell mode
+#+begin_src elisp :tangle emacs/init.el
+  ;; powershell mode
+  (use-package powershell
+    :straight t
+    :mode (("\\.ps\\'" . powershell-mode)
+           ("\\.ps1\\'" . powershell-mode)))
+#+end_src
+
+*** typescript-ts-mode
+Typescript mode
+#+begin_src elisp :tangle emacs/init.el
+  ;; typescript-ts-mode
+  (use-package typescript-ts-mode
+    :ensure nil
+    :mode (("\\.tsx\\'" . tsx-ts-mode)
+           ("\\.ts\\'" . tsx-ts-mode))
+    :config
+    (setq typescript-ts-mode-indent-offset 2))
 #+end_src
 
 *** typst-ts-mode
@@ -624,13 +741,13 @@ https://github.com/NixOS/nix-mode
     :mode "\\.typ\\'")
 #+end_src
 
-*** go-ts-mode
-
+*** yaml-ts-mode
 #+begin_src elisp :tangle emacs/init.el
-  ;; go-ts-mode
-  (use-package go-ts-mode
+  ;; yaml-ts-mode
+  (use-package yaml-ts-mode
     :ensure nil
-    :mode "\\.go\\'")
+    :mode (("\\.yml\\'" . yaml-ts-mode)
+           ("\\.yaml\\'" . yaml-ts-mode)))
 #+end_src
 
 ** Treesit
@@ -669,27 +786,51 @@ Ollama: https://ollama.com
 #+end_src
 
 ** gptel
-https://github.com/karthink/gptel
 
-# curl http://localhost:9931/v1/chat/completions \
-#   -H "Content-Type: application/json" \
-#   -d '{
-#     "model": "ggml-org/gemma-4-E4B-it-GGUF:Q8_0",
-#     "messages": [{"role": "user", "content": "Hello!"}]
-#   }'
+https://github.com/karthink/gptel
 
 #+begin_src elisp :tangle emacs/init.el
   (use-package gptel
     :straight t
     :ensure t
     :config
-    (gptel-make-openai "llama-cpp"          ;Any name
-      :stream t                             ;Stream responses
-      :protocol "http"
-      :host "localhost:9931"                ;Llama.cpp server location
-      :models '("ggml-org/gemma-4-E4B-it-GGUF:Q8_0"))                ;Any names, doesn't matter for Llama
+    (gptel-make-openai "llama-cpp"                      ;;  Any name
+      :stream t                                         ;; Stream responses
+      :protocol "http"                                  ;; Llama.cpp server doesn't use TLS
+      :host "localhost:9931"                            ;; Llama.cpp server location
+      :models '("ggml-org/gemma-4-E4B-it-GGUF:Q8_0")    ;; Any names, doesn't matter for Llama
+      :key ""                                           ;; No authentication
+      )
     (setq gptel-model 'ggml-org/gemma-4-E4B-it-GGUF:Q8_0)
     )
+#+end_src
+
+** gptel-agent
+
+https://github.com/karthink/gptel-agent
+
+#+begin_src elisp :tangle emacs/init.el
+  (use-package gptel-agent
+    :straight t
+    :config
+    (gptel-agent-update)
+  )
+#+end_src
+
+** ob-gptel
+
+#+begin_src elisp :tangle emacs/init.el
+  (use-package ob-gptel
+    :straight (ob-gptel
+                :type git
+                :host github
+                :repo "jwiegley/ob-gptel")
+    :config
+    (add-to-list 'org-babel-load-languages '(gptel . t))
+    (defun ob-gptel-setup-completions ()
+      (add-hook 'completion-at-point-functions
+                'ob-gptel-capf nil t))
+    :hook (org-mode . ob-gptel-setup-completions))
 #+end_src
 
 ** Custom file

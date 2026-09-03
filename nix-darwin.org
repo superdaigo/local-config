@@ -98,6 +98,7 @@ Delete all generations
         environment.systemPackages = with pkgs; [
           # emacs30  # Use "Emacs for Mac OS X" because of "libgccjit.so error" on Emacs 29 and later.
           awscli2
+          bun
           cmigemo
           curl
           direnv
@@ -129,6 +130,7 @@ Delete all generations
           uv
           # vagrant
           wireshark
+          yazi
           yt-dlp
           # zellij
           zsh
