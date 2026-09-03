@@ -512,7 +512,7 @@ Org-mode configuration
        (dot . t)
        (ruby . t)
        (python . t)
-       (gptel . t)
+       ;; (gptel . t)
        ;;(blockdiag . t)
        ;;(mermaid . t)
        ))
@@ -794,6 +794,7 @@ https://github.com/karthink/gptel
     :straight t
     :ensure t
     :config
+    (setq gptel-default-mode 'markdown-ts-mode)
     (gptel-make-openai "llama-cpp"                      ;;  Any name
       :stream t                                         ;; Stream responses
       :protocol "http"                                  ;; Llama.cpp server doesn't use TLS
