@@ -832,6 +832,25 @@ https://github.com/karthink/gptel-agent
       (add-hook 'completion-at-point-functions
                 'ob-gptel-capf nil t))
     :hook (org-mode . ob-gptel-setup-completions))
+
+** atomic-chrome
+
+Edit Chrome browser's texts in Emacs
+https://github.com/KarimAziev/chrome-emacs
+
+Chrome Emacs (Chrome extension): https://chromewebstore.google.com/detail/chrome-emacs/dabdpcafiblbndpoadckibiaojbdnpjg
+
+#+begin_src elisp
+  (use-package atomic-chrome
+    :demand t
+    :straight (atomic-chrome
+               :repo "KarimAziev/atomic-chrome"
+               :type git
+               :host github)
+    :commands (atomic-chrome-start-server)
+    :config
+    (setq-default atomic-chrome-extension-type-list '(atomic-chrome))
+    (atomic-chrome-start-server))
 #+end_src
 
 ** Custom file
