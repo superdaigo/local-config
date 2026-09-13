@@ -799,7 +799,8 @@ https://github.com/karthink/gptel
       :stream t                                         ;; Stream responses
       :protocol "http"                                  ;; Llama.cpp server doesn't use TLS
       :host "localhost:9931"                            ;; Llama.cpp server location
-      :models '("ggml-org/gemma-4-E4B-it-GGUF:Q8_0")    ;; Any names, doesn't matter for Llama
+      ;; :models '("ggml-org/gemma-4-E4B-it-GGUF:Q8_0")    ;; Any names, doesn't matter for Llama
+      :models '("ggml-org/gemma-4-12B-it-GGUF:Q4_0")    ;; Any names, doesn't matter for Llama
       :key ""                                           ;; No authentication
       )
     (setq gptel-model 'ggml-org/gemma-4-E4B-it-GGUF:Q8_0)
@@ -832,6 +833,7 @@ https://github.com/karthink/gptel-agent
       (add-hook 'completion-at-point-functions
                 'ob-gptel-capf nil t))
     :hook (org-mode . ob-gptel-setup-completions))
+#+end_src
 
 ** atomic-chrome
 
