@@ -130,3 +130,17 @@ Enables simple mouse operations.
   # Turn on simple mouse operation
   set -g mouse on
 #+end_src
+
+** Modifire
+
+Added modifire for `pi`.
+
+> Warning: tmux extended-keys is off. Modified Enter keys may not work. Add `set -g extended-keys
+ on` to ~/.tmux.conf and restart tmux.
+> Warning: tmux extended-keys-format is xterm. Pi works best with csi-u. Add `set -g extended-keys-format csi-u` to ~/.tmux.conf and
+ restart tmux.
+
+#+begin_src conf :tangle tmux/.tmux.conf
+  set -g extended-keys on
+  set -g extended-keys-format csi-u
+#+end_src

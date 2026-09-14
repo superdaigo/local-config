@@ -138,6 +138,8 @@ TODO: Clean up
     PATH="/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
     export EDITOR="emacs-nw -Q"
   fi
+  ## bun
+  if which bun > /dev/null; then PATH="${HOME}/.bun/bin:$PATH"; fi
 
   export PATH
 
