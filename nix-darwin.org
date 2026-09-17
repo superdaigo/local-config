@@ -92,6 +92,11 @@ Some modifications are requried and added a `./configuration.nix` file.
         modules = [ ./configuration.nix ];
         specialArgs = { inherit inputs; };
       };
+      # Host: PC-00096
+      darwinConfigurations."PC-00096" = nix-darwin.lib.darwinSystem {
+        modules = [ ./configuration.nix ];
+        specialArgs = { inherit inputs; };
+      };
       # Add if any host
     };
   }

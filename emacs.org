@@ -254,6 +254,8 @@ The mode is called through [[*Consult][Consult]].
   ;; recentf
   (recentf-mode 1)
   (setq recentf-max-saved-items 10000)
+  (add-to-list 'recentf-exclude "/\\.git/")
+  (add-to-list 'recentf-exclude "^/tmp/")
 #+end_src
 
 ** Ibuffer
