@@ -136,7 +136,7 @@ TODO: Clean up
   ## emacs
   if [ -d "/Applications/Emacs.app/Contents/MacOS" ]; then
     PATH="/Applications/Emacs.app/Contents/MacOS:/Applications/Emacs.app/Contents/MacOS/bin:$PATH"
-    export EDITOR="emacs-nw -Q"
+    export EDITOR="emacsclient -nw -a \"\""
   fi
   ## bun
   if which bun > /dev/null; then PATH="${HOME}/.bun/bin:$PATH"; fi

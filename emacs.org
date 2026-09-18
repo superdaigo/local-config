@@ -254,8 +254,9 @@ The mode is called through [[*Consult][Consult]].
   ;; recentf
   (recentf-mode 1)
   (setq recentf-max-saved-items 10000)
-  (add-to-list 'recentf-exclude "/\\.git/")
-  (add-to-list 'recentf-exclude "^/tmp/")
+  (add-to-list 'recentf-exclude "/\\.git/")           ;; git files
+  (add-to-list 'recentf-exclude "^/tmp/")             ;; general temporary files
+  (add-to-list 'recentf-exclude "^/var/folders/fn/")  ;; pi.dev
 #+end_src
 
 ** Ibuffer
