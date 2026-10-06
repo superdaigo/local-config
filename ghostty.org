@@ -45,12 +45,12 @@ https://github.com/yuru7/HackGen
   # Font
   font-family = "HackGen Console NF"
   font-size = 16
-  # Meta key (for mac)
-  macos-option-as-alt = left
   # Background
-  background-opacity = 0.9
+  background-opacity = 1
   # No initial window
-  initial-window = false
+  initial-window = true
+  # Disable all window decorations (titlebar, No borders, etc.)
+  window-decoration = none
   # Use non-native full screen
   macos-non-native-fullscreen = true
   # Yakuake-like termial
@@ -71,6 +71,8 @@ Mac keybinding
   # # Yakuake-like termial
   # keybind = global:cmd+escape=toggle_quick_terminal
   # Left option key as Meta key  # left, right, true (or both)
+
+  # Meta key (for mac)
   macos-option-as-alt = left
 #+end_src
 
