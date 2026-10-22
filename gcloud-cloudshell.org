@@ -1,0 +1,19 @@
+# Google Cloud Shell Configuration
+
+In Google Cloud Shell, you can preserve files under your home directory, but not other files.
+So, any application you need to add must be installed under your home directory.
+
+But many applications has been pre-installed, like git, gh, uv, etc.
+
+
+#+begin_src bash
+  # PATH
+  export PATH="$HOME/.local/bin:$PATH"
+
+  # Azure CLI
+  export AZ_PYTHON="$HOME/azure-cli/.venv/bin/python"
+  export PATH="$HOME/azure-cli/bin:$PATH"
+
+  # PS1 adding newline
+  export PS1="$(echo $PS1|sed -e 's/$ / /g')\n$ "
+#+end_src

@@ -166,5 +166,11 @@ Configuration for Apple sillicon mac
 
     # Allow specific Unfree package
     nixpkgs.config.allowUnfree = true;
+
+    # Block Vulnerable Certificate - eMudhra Intermediate CA Compromise
+    security.pki.caCertificateBlacklist = [
+      "Comodo AAA Services root"
+      "emSign ECC Root CA - G3"
+    ];
   }
 #+end_src

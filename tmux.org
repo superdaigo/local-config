@@ -141,6 +141,10 @@ Added modifire for `pi`.
  restart tmux.
 
 #+begin_src conf :tangle tmux/.tmux.conf
-  set -g extended-keys on
-  set -g extended-keys-format csi-u
+  # Pi
+  # set -g extended-keys on
+  # set -g extended-keys-format csi-u
+
+  # Claude
+  set -g focus-events on
 #+end_src
