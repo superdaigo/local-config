@@ -5,7 +5,7 @@ Here is an org-babel-tangle to deploy init.el and early-ini.el under ~$HOME/.ema
 
 #+begin_src elisp :results none
   ;; local variables
-  (setq-local config-files (list "init.el" "early-init.el"))
+  (setq-local config-files (list "init.el" "early-init.el" "open-with-emacsclient.applescript"))
   (setq-local dst-dir (expand-file-name "~/.emacs.d"))
   (setq-local tmp-dir (file-name-base buffer-file-name))
   (setq-local backup-prefix (format-time-string "%Y-%m-%d_%H%M%S_"))
@@ -191,7 +191,7 @@ https://github.com/yuru7/HackGen
           (set-fontset-font t 'japanese-jisx0208 fontspec)
           (set-fontset-font t 'katakana-jisx0201 fontspec)
           (set-fontset-font t 'japanese-jisx0212 fontspec)
-          (dolist (w '((basement . #x2000)
+          (dolist (w '((basemet . #x2000)
                        (kana . #x3000)
                        (cjk-misc . #x3000)
                        (kanji . #x4e00)))
@@ -660,6 +660,9 @@ Markdown mode
     ;; 見出し以外の主要なフェイスに default のフォント設定を一括適用
     ;; (mapc (lambda (face) (custom-set-faces `(,face ((t (:inherit default :family nil :height 1.0))))))
     ;;       '(markdown-table-face markdown-inline-code-face markdown-code-face markdown-pre-face markdown-markup-face))
+
+    ;; Pressing "Enter/Return" key for newline in a code block
+    (setq markdown-ts-enable-code-block-context-mode nil)
     )
 #+end_src
 
@@ -868,4 +871,79 @@ This settings must be loaded at the last.
   (setq custom-file "~/.emacs.d/emacs-custom.el")
   (when (file-exists-p custom-file)
     (load custom-file))
+#+end_src
+* Apple Script (OSAScript) to open files with emacsclient GUI
+
+Open files with emacsclient on macOS Finder.
+Posted on Gist: https://gist.github.com/superdaigo/ac45c9a746dfaccbfaf53e57098d5032
+
+1. Open the file ~open-with-emacsclient.applescript~ with the "Script Editor" app
+2. Export as an Application ~open-with-emacsclient.app~
+3. Set the exported app ~open-with-emacsclient.app~ with any files you want to open with Emacsclient
+   3-1. Right click on the file which you want to open with Emacsclient
+   3-2. Select "Open With" > "Other..."
+   3-3. Select "open-with-emacsclient.app" Application
+
+Note.
+
+- Disk access permission: The "Terminal" app and "open-with-emacsclient" app requries local disk access (full disk access is recommended)
+- Sometimes the opened file is not shown on top, but exists in the buffer list (I don't know why)
+
+#+begin_src applescript :tangle emacs/open-with-emacsclient.applescript
+  -- # Open files with emacsclient GUI from macOS Finder app
+  -- Conditions:
+  -- - macOS 26.6.2
+  -- - Emacs 31.1 (https://emacsformacos.com)
+  -- Reference:
+  -- - https://superuser.com/questions/685111/basic-setup-of-emacs-server-under-osx
+
+  property emacsClient : "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+  property emacsNoWindow : "/Applications/Emacs.app/Contents/MacOS/emacs-nw"
+  property emacsDaemonParameters : " --user " & (system attribute "USER") & " --daemon"
+  -- Usually, no need to chagne LANG. But need to modify in my case.
+  property envVars : "LANG=en_US.UTF-8 "
+  property waitDemon : 10
+  property waitClient : 2
+
+  on run
+  	-- Don't open anything when executing this script
+  	display dialog "This is an app to launch files with Emacs Client"
+  end run
+
+  on open documentsList
+  	repeat with documentItem in documentsList
+  		set documentAlias to contents of documentItem
+  		set filePath to quoted form of (POSIX path of documentAlias)
+  		set daemonRunning to "nil"
+  		
+  		tell application "Terminal"
+  			-- Somehow terminal name is required in my environment
+  			set terminalName to "open with emacsclient"
+  			try
+  				set daemonRunning to do shell script envVars & emacsClient & " -e '(daemonp)'"
+  			end try
+  			if daemonRunning is "nil" then
+  				do script envVars & emacsNoWindow & emacsDaemonParameters
+  				delay waitDemon
+  				close window 1
+  			end if
+  			
+  			set frameVisible to do shell script emacsClient & " -e '(> (length (visible-frame-list)) 1)'"
+  			
+  			if frameVisible is "t" then
+  				-- open with the current emacs frame
+  				do script envVars & emacsClient & " -n " & filePath
+  			else
+  				-- open with new emacs frame
+  				do script envVars & emacsClient & " -c -n " & filePath
+  			end if
+  			delay waitClient
+  			close window 1
+  		end tell
+
+  		-- Limit to 1 file
+  		end repeat
+  	-- Focus to Emacs app
+  	tell application "Emacs" to activate
+  end open
 #+end_src
