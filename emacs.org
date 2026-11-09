@@ -356,6 +356,25 @@ Used by Consult and Vertico.
     (completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 
+** imenu-list
+
+Show list of contents
+https://github.com/bmag/imenu-list
+
+| Key bind | Description       |
+|----------+-------------------|
+| C-c i    | Toggle imenu-list |
+
+#+begin_src elisp :tangle emacs/init.el
+  (use-package imenu-list
+    :straight t
+    :ensure t
+    :bind (("C-c i" . imenu-list-smart-toggle))
+    :config
+    (setq imenu-list-focus-after-activation t)
+    )
+#+end_src
+
 ** Japanese Input Method - ddskk
 
 Japanese input method for Emacs.
