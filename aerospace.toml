@@ -53,7 +53,7 @@ automatically-unhide-macos-hidden-apps = false
 # persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B",
 #                          "C", "D", "E", "F", "G", "I", "M", "N", "O", "P", "Q",
 #                          "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-persistent-workspaces = ["1", "2", "3", "4", "7","8", "9", "0"]
+persistent-workspaces = ["1", "2", "3", "4", "7","8", "9", "10"]
 
 # A callback that runs every time binding mode changes
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -85,12 +85,12 @@ on-window-detected = [
     {
         if = 'test %{app-bundle-id} = com.apple.systempreferences',
         check-further-callbacks = true,
-        run = ['layout floating', 'move-node-to-workspace 11'],  # The callback itself
+        run = ['layout floating', 'move-node-to-workspace 10'],  # The callback itself
     },
     {
         if = 'test %{app-bundle-id} = com.bitwarden.desktop',
         check-further-callbacks = true,
-        run = ['layout floating', 'move-node-to-workspace 11'],  # The callback itself
+        run = ['layout floating', 'move-node-to-workspace 10'],  # The callback itself
     },
 ]
 
@@ -163,7 +163,7 @@ on-window-detected = [
     alt-7 = 'workspace 7'
     alt-8 = 'workspace 8'
     alt-9 = 'workspace 9'
-    alt-0 = 'workspace 0'
+    alt-0 = 'workspace 10'
     # alt-9 = 'workspace 9'
     # alt-a = 'workspace A' # In your config, you can drop workspace bindings that you don't need
     # alt-b = 'workspace B'
@@ -198,7 +198,7 @@ on-window-detected = [
     alt-shift-7 = 'move-node-to-workspace 7'
     alt-shift-8 = 'move-node-to-workspace 8'
     alt-shift-9 = 'move-node-to-workspace 9'
-    alt-shift-0 = 'move-node-to-workspace 0'
+    alt-shift-0 = 'move-node-to-workspace 10'
     # alt-shift-a = 'move-node-to-workspace A'
     # alt-shift-b = 'move-node-to-workspace B'
     # alt-shift-c = 'move-node-to-workspace C'
@@ -263,5 +263,5 @@ on-window-detected = [
 7 = 'KG251Q'
 8 = 'KG251Q'
 9 = 'KG251Q'
-0 = 'KG251Q'
+10 = 'KG251Q'
 
